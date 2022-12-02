@@ -92,9 +92,16 @@ data.sort_values(by='Date', inplace=True)
 # print(data.head().T)
 # print(data.tail().T)
 
+print("with header")
+print(data.info(), end="\n\n")
+print(data.describe(), end="\n\n")
+print(data.head(), end="\n\n")
+
 # 인덱스, 제목 열 제거
 data.to_csv(r"Prepare data\processed data\my_total_data.csv", header=None, index=None)
 data = pd.read_csv(r"Prepare data\processed data\my_total_data.csv", header=None)
 # Check OK
-print(data.info())
-print(data.head())
+print("without header")
+print(data.info(), end="\n\n")
+print(data.describe(), end="\n\n")
+print(data.head(), end="\n\n")
