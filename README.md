@@ -20,6 +20,8 @@
   
 [shared data](https://github.com/dapin1490/waste-complain-system/tree/main/Prepare%20data/shared%20data) : 인코딩과 파싱 문제로 합치지 못한 5개를 포함한 57개의 csv 파일이 저장된 폴더  
   
+[error_list.txt](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/error_list.txt) : 파일은 존재하지만 오류로 합치지 못한 파일과 오류 이유 목록  
+  
 [concat_all_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/concat_all_data.csv) : 52개의 csv 파일을 하나로 concat한 파일  
   
 [pre_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/pre_processed_data.csv) : 지정된 column 이외의 데이터, NaN, 불필요한 공백 등 제거하고 데이터타입 지정한 파일. 오타 등의 이상치 포함됨.  

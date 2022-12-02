@@ -1,15 +1,15 @@
-project\shared data\10.csv
+Prepare data\shared data\10.csv
 인코딩 던짐
 
-project\shared data\12.csv
+Prepare data\shared data\12.csv
 인코딩 던짐
 
-project\shared data\19.csv
+Prepare data\shared data\19.csv
 줄이 이상하다고 함
 
-project\shared data\39.csv
+Prepare data\shared data\39.csv
 인코딩 던짐
 
-project\shared data\45.csv
+Prepare data\shared data\45.csv
 인코딩 던짐
 
