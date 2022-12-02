@@ -18,7 +18,7 @@
 ## 데이터
 **전체 수강생 데이터(csv) 59개 중** 비공개 링크, 파일 존재하지 않음 문제로 얻지 못한 2개와 인코딩 문제 또는 파싱 문제로 합치지 못한 5개를 제외한 **52개 데이터 사용함**.  
   
-[shared data](https://github.com/dapin1490/waste-complain-system/tree/main/Prepare%20data/shared%20data) : 52개의 csv 파일이 저장된 폴더  
+[shared data](https://github.com/dapin1490/waste-complain-system/tree/main/Prepare%20data/shared%20data) : 인코딩과 파싱 문제로 합치지 못한 5개를 포함한 57개의 csv 파일이 저장된 폴더  
   
 [concat_all_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/concat_all_data.csv) : 52개의 csv 파일을 하나로 concat한 파일  
   
