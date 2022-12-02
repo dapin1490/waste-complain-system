@@ -1,4 +1,4 @@
-,Name,Widths,Hights,Latitude,Longitude,Rubbish,Plastics,Cans,Glass,Papers
+Number,Name,Widths,Hights,Latitude,Longitude,Rubbish,Plastics,Cans,Glass,Papers
 0,sample (1),3024.0,4032.0,37.3949,126.9389,1,0,0,0,0
 1,sample (2),3024.0,4032.0,37.3951,126.939,1,0,0,0,0
 2,sample (3),3024.0,4032.0,37.3951,126.9391,1,0,0,0,0

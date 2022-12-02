@@ -1,7 +1,4 @@
 import pandas as pd
-import random
-import matplotlib.pyplot as plt
-import scipy.stats as stats
 
 # 이상치 제거 함수 : https://lifelong-education-dr-kim.tistory.com/16
 def remove_out(dataframe, remove_col, rev_range=3):
@@ -46,7 +43,7 @@ print(pre_data.info())
 print(pre_data.describe().T)
 
 # 1차 처리 데이터 저장
-pre_data.to_csv(r"Prepare data\processed data\pre_processed_data.csv")
+pre_data.to_csv(r"Prepare data\processed data\pre_processed_data.csv", index_label="Number")
 
 # 이상치 제거
 pre_data = remove_out(pre_data, list(pre_data.columns)[:5], 45)
@@ -56,4 +53,4 @@ print(pre_data.info())
 print(pre_data.describe().T)
 
 # 2차 처리 데이터 저장
-pre_data.to_csv(r"Prepare data\processed data\outlier_processed_data.csv")
+pre_data.to_csv(r"Prepare data\processed data\outlier_processed_data.csv", index_label="Number")
