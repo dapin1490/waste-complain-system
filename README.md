@@ -27,3 +27,5 @@
 [pre_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/pre_processed_data.csv) : 지정된 column 이외의 데이터, NaN, 불필요한 공백 등 제거하고 데이터타입 지정한 파일. 오타 등의 이상치 포함됨.  
   
 [outlier_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/outlier_processed_data.csv) : 위의 [pre_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/pre_processed_data.csv)에서 이상치 제거한 파일. 전체 샘플 중 이상치는 극히 일부일 것으로 예상되기 때문에 최대한 많은 샘플을 남기려고 했음. 이에 대한 문의가 있다면 issue로 올려주시기 바람.  
+  
+[my_total_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/my_total_data.csv) : 내 프로젝트에 필요한 형식으로 처리한 데이터. 헤더와 인덱스가 없고 column은 &#91;`파일명, 날짜(8자리 숫자), 경도, 위도, 포함된 쓰레기 종류 수, 각 쓰레기 유형별 유무`&#93; 순서로 구성되어 있다.  
