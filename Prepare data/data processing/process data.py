@@ -37,6 +37,11 @@ pre_data['Latitude'] = pre_data["Latitude"].str.replace(pat=' ', repl='')
 # pre_data['Latitude'] = pre_data["Latitude"].str.replace(pat=r'[^\w]', repl='', regex=True)
 pre_data['Latitude'] = pre_data['Latitude'].astype('float64')
 
+# int여야 하는 값 타입 변경
+column_list = list(pre_data.columns)
+for col in column_list[5:]:
+    pre_data[col] = pre_data[col].astype('int64')
+
 print(pre_data.info())
 print(pre_data.describe().T)
 
