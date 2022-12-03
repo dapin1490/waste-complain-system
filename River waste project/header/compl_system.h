@@ -10,6 +10,9 @@
 #include <fstream> // 파일 입출력
 #include <ctime> // 시간 데이터 관리
 #include <sstream> // 문자열 파싱
+#include <climits> // INF
+#include <queue> // 우선순위 큐
+#include <stack>
 using namespace std;
 
 // 행정동코드 출처 : https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000052&nttId=94196
@@ -62,8 +65,13 @@ void error(_error code, string message="") {
 	exit(1); // 프로그램 비정상 종료
 }
 
+double squared_d(pair<double, double> a, pair<double, double> b) {
+	return pow(b.first - a.first, 2) + pow(b.second - a.second, 2);
+}
+
 class complain { // 민원 클래스
 private:
+	unsigned id; // 민원을 구분하기 위한 id
 	string pic_name; // 사진 이름(필요시 절대/상대 파일 경로 포함, 사진 크기를 비롯해 사진 파일 자체에 대한 각종 정보는 원본 파일의 정보에 포함된다고 본다)
 	time_t rawtime; // 민원 신고 날짜(time_t)
 	tm comp_date; // 민원 신고 날짜(tm)
@@ -75,9 +83,10 @@ public:
 
 public:
 	complain() { pic_name = "None"; }
-	complain(string pn, int cdate, double x, double y, int wcnt, int* ws);
-	complain(string pn, int cdate, double x, double y, int wcnt, string ws);
+	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, int* ws);
+	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, string ws);
 
+	unsigned get_id() { return id; } // 민원 id 반환
 	string get_name() { return pic_name; } // 사진 이름 반환
 	time_t get_date() { return rawtime; } // 민원 신고 날짜 반환
 	pair<double, double> get_codi() { return coordinates; } // 사진 좌표 반환(pair)
@@ -97,9 +106,11 @@ bool is_wcnt_zero(complain c) {
 
 class compl_system { // 하천 쓰레기 민원 처리 시스템
 private:
+	unsigned latest_id; // 구역의 시작점을 id 0으로 하기 위해 1부터 시작
 	pair<int, int> area_code; // 지역 코드(위도, 경도 정수 부분)
 	unsigned thresh; // 민원 처리 최소 단위 : 누적된 민원의 수가 이 수보다 클 때 처리. 기본값은 20
 	vector<vector<complain>> accumed_compls_list; // 쓰레기 분류별 누적 민원 배열
+	unsigned file_checkpoint; // 전체 민원 파일 어디까지 읽었는지 표시
 
 	vector<complain> all_compls; // 전체 민원 벡터
 	multimap<string, complain> map_comp; // 사진 이름 기준 전체 민원 멀티맵
@@ -127,6 +138,9 @@ private:
 
 	// 누적 민원 처리
 	void clear_compls(int waste_code);
+
+	// 누적 민원 물리적 처리
+	void call_drone(vector<complain>& c_list);
 public:
 	compl_system();
 	compl_system(int x, int y);
@@ -141,6 +155,9 @@ public:
 	// 일부 정상 실행 확인
 	// 민원 접수
 	void receive_compl();
+
+	// 자동 민원 접수
+	void auto_receive_compl(int cnt = 0);
 
 	// 기본 실행 확인
 	// 정렬 기준(sort_by)에 따른 전체 민원 조회(출력하게 할 것이므로 반환값 없음)
@@ -173,9 +190,64 @@ public:
 	void check_waiting();
 };
 
+class Edge {
+public:
+	double w; // 거리
+	unsigned from_id; // 시작점
+	unsigned to_id; // 종점
+	pair<double, double> from; // 시작점 좌표
+	pair<double, double> to; // 종점 좌표
+
+	Edge(complain a, complain b);
+	Edge(unsigned fid, unsigned tid, pair<double, double> f, pair<double, double> t);
+};
+
+struct cmp { // 다익스트라 우선순위 큐 비교 연산자 : 가중치가 적고 정점 번호가 적은 것을 우선으로 함
+	bool operator()(Edge a, Edge b) {
+		return a.w > b.w;
+	}
+};
+
+class drone_graph {
+private:
+	unsigned v; // 정점 수 : id로 사용
+	vector<Edge> edges; // 그래프가 갖는 간선들
+	vector<bool> visited; // 방문 여부
+	vector<Edge> mst; // 최소 신장 트리
+	unsigned w_code; // 쓰레기 코드
+
+public:
+	// 생성자
+	drone_graph() { this->v = 0; }
+	drone_graph(unsigned v) { this->v = v; visited.resize(v); }
+
+	// 함수 정의에 쓰인 const : 이 함수 안에서 쓰는 값들을 변경할 수 없다
+	unsigned size() const { return v; } // 그래프가 갖는 정점의 수를 반환
+	auto& edges_from() const { return this->edges; } // 그래프가 갖는 간선들을 반환
+	// 특정 정점에 연결된 간선들만 반환
+	auto edges_from(unsigned i) const;
+	// mst 트리에서 특정 정점에 연결된 간선들만 반환
+	auto mst_edges_from(unsigned i) const;
+
+	// 방향 간선 추가
+	void add(Edge& e);
+
+	// 무방향 간선 추가
+	void add_undir(Edge& e);
+
+	// 최소 신장 트리 출력
+	void print_mst(vector<complain>& c_list);
+
+	// 프림 알고리즘으로 최소 신장 트리 생성 : https://yabmoons.tistory.com/363
+	void prim_tree();
+
+	// DFS로 최소 신장 트리 전부 방문
+	void fly_dfs_drone(vector<complain>& c_list);
+};
+
 /* class complain */
 
-complain::complain(string pn, int cdate, double x, double y, int wcnt, int* ws) {
+complain::complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, int* ws) {
 	// 참고 : https://cplusplus.com/reference/ctime/mktime/
 	// 참고 : https://www.it-note.kr/143
 	rawtime = time(&rawtime);
@@ -185,6 +257,7 @@ complain::complain(string pn, int cdate, double x, double y, int wcnt, int* ws) 
 	comp_date.tm_mday = cdate % 100;
 	rawtime = mktime(&comp_date);
 
+	this->id = id;
 	pic_name = pn;
 	coordinates = make_pair(x, y);
 	waste_cnt = wcnt;
@@ -192,7 +265,7 @@ complain::complain(string pn, int cdate, double x, double y, int wcnt, int* ws) 
 
 	// print();
 }
-complain::complain(string pn, int cdate, double x, double y, int wcnt, string ws) {
+complain::complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, string ws) {
 	// 참고 : https://cplusplus.com/reference/ctime/mktime/
 	// 참고 : https://www.it-note.kr/143
 	time_t rawtime = time(&rawtime);
@@ -202,6 +275,7 @@ complain::complain(string pn, int cdate, double x, double y, int wcnt, string ws
 	comp_date.tm_mday = cdate % 100;
 	rawtime = mktime(&comp_date);
 
+	this->id = id;
 	pic_name = pn;
 	coordinates = make_pair(x, y);
 	waste_cnt = wcnt;
@@ -224,7 +298,7 @@ complain::complain(string pn, int cdate, double x, double y, int wcnt, string ws
 
 // 민원 정보 출력
 void complain::print() {
-	output << "\n민원 파일명 : \"" << pic_name << "\"\n";
+	output << "\n민원 id : " << id << "\n민원 파일명 : \"" << pic_name << "\"\n";
 	if (is_valid_date == 0) {
 		char buffer[256];
 		//strftime(buffer, sizeof(buffer), "%Y-%m-%d %X", &comp_date);
@@ -245,36 +319,11 @@ void complain::print() {
 
 /* class compl_system */
 
-// 두 민원이 서로 같은지 확인 : 사진 이름과 민원 날짜를 기본키로 사용하기로 함
+// 두 민원이 서로 같은지 확인
 bool compl_system::is_same(complain& a, complain& b) {
-	if (a.get_name() != b.get_name())
-		return false;
-
-	/*// 삭제 연산에서 이 함수를 호출하는데, 한 쪽은 이미 쓰레기를 처리했다고 데이터를 업데이트 했고 다른 쪽은 업데이트가 안 된 상태로 와서 이걸 비교하면 당연히 다름
-	if (a.get_wcnt() != b.get_wcnt())
-		return false;*/
-
-		/*// 실수 비교가 제대로 될 거라고 기대하면 안 됨
-		// 아직까지 대안 없음
-		auto a_codi = a.get_codi();
-		auto b_codi = b.get_codi();
-		if (a_codi.first != b_codi.first || a_codi.second != b_codi.second)
-			return false;*/
-
-			//// 참고 : https://torbjorn.tistory.com/357
-			//if (!equal(a.wastes, a.wastes + 5, b.wastes, b.wastes + 5))
-			//	return false;
-
-	time_t a_raw = a.get_date();
-	tm a_tm;
-	time_t b_raw = b.get_date();
-	tm b_tm;
-	errno_t a_val = localtime_s(&a_tm, &a_raw);
-	errno_t b_val = localtime_s(&b_tm, &b_raw);
-	if (a_tm.tm_year != b_tm.tm_year || a_tm.tm_mon != b_tm.tm_mon || a_tm.tm_mday != b_tm.tm_mday)
-		return false;
-
-	return true;
+	if (a.get_id() == b.get_id())
+		return true;
+	return false;
 }
 
 // 특정 분류의 쓰레기 민원이 충분히 많아 처리해도 될만한지 확인
@@ -424,7 +473,6 @@ void compl_system::view_all(multimap<time_t, complain> mcb) {
 
 // 누적 민원 처리
 void compl_system::clear_compls(int waste_code) {
-	// 벡터에서 NULL 지우기 참고 : https://cho001.tistory.com/164
 	output << "\n처리 요청 쓰레기 코드 : " << waste_code << "\n";
 	if (!is_enough(waste_code)) {
 		output << "누적된 민원의 수가 최소 처리 단위보다 적습니다. 그래도 처리하시겠습니까? Y / N\n";
@@ -438,6 +486,7 @@ void compl_system::clear_compls(int waste_code) {
 
 	output << "처리를 시작합니다...\n";
 
+	call_drone(accumed_compls_list[waste_code]);
 	accumed_compls_list[waste_code].clear();
 
 	for (complain e : all_compls) {
@@ -534,15 +583,50 @@ void compl_system::clear_compls(int waste_code) {
 	return;
 }
 
+// 누적 민원 물리적 처리
+void compl_system::call_drone(vector<complain>& c_list) {
+	drone_graph navi{unsigned(c_list.size() + 1)};
+	pair<double, double> station = make_pair(double(area_code.first), double(area_code.second));
+
+	for (int i = 0; i < c_list.size(); i++) {
+		Edge edge = Edge(0, i + 1, station, c_list[i].get_codi());
+		navi.add_undir(edge);
+	}
+
+	for (int i = 0; i < c_list.size(); i++) {
+		for (int j = 0; j < c_list.size(); j++) {
+			if (i == j)
+				continue;
+			Edge edge = Edge(i + 1, j + 1, c_list[i].get_codi(), c_list[j].get_codi());
+			navi.add_undir(edge);
+		}
+	}
+
+	output << "경로를 구성합니다...\n";
+	navi.prim_tree();
+
+	output << "경로가 생성되었습니다.\n";
+	navi.print_mst(c_list);
+
+	navi.fly_dfs_drone(c_list);
+
+	output << "탐색된 경로로 수거 드론을 요청합니다.\n";
+	return;
+}
+
 compl_system::compl_system() { // 기본 생성자
+	latest_id = 1;
 	area_code = make_pair(NULL, NULL);
 	thresh = 20;
 	accumed_compls_list.resize(5);
+	file_checkpoint = 0;
 }
 compl_system::compl_system(int x, int y) { // 생성자
+	latest_id = 1;
 	area_code = make_pair(x, y);
 	thresh = 20;
 	accumed_compls_list.resize(5);
+	file_checkpoint = 0;
 }
 
 // 시스템 시작 : 사용자에게 지역 코드를 입력받고 기존 데이터 유무 확인, 새 로그 생성 등
@@ -605,6 +689,7 @@ void compl_system::system_on() {
 // 민원 접수
 void compl_system::receive_compl() {
 	complain new_comp;
+	unsigned c_id;
 	string word;
 	string pn; // 사진 이름(필요시 절대/상대 파일 경로 포함, 사진 크기를 비롯해 사진 파일 자체에 대한 각종 정보는 원본 파일의 정보에 포함된다고 본다)
 	int cdate; // 민원 신고 날짜
@@ -635,7 +720,7 @@ void compl_system::receive_compl() {
 		output << "분류별 쓰레기 포함 여부를 공백 없이 다섯 자리 숫자로 입력해 주세요.\n";
 		input >> ws;
 
-		new_comp = complain(pn, cdate, x, y, wcnt, ws);
+		new_comp = complain(latest_id, pn, cdate, x, y, wcnt, ws);
 
 		output << "민원 정보 입력이 완료되었습니다. 입력한 정보를 다시 확인해 주세요.\n\n";
 		new_comp.print();
@@ -653,7 +738,7 @@ void compl_system::receive_compl() {
 
 		file << pn << "," << cdate << "," << x << "," << y << "," << wcnt << ",";
 		for (int i = 0; i < 5; i++) {
-			file << ws.at(i) << (i < 4 ? "," : "");
+			file << ws.at(i) << (i < 4 ? "," : "\n");
 		}
 
 		file.close();
@@ -662,7 +747,7 @@ void compl_system::receive_compl() {
 	}
 
 	output << "민원을 접수 중입니다...\n";
-
+	latest_id += 1;
 	this->all_compls.push_back(new_comp);
 	this->map_comp.insert(make_pair(new_comp.get_name(), new_comp));
 	this->map_latitude.emplace(new_comp.get_codi().first, new_comp);
@@ -680,6 +765,101 @@ void compl_system::receive_compl() {
 	}
 
 	output << "민원이 접수되었습니다.\n";
+
+	return;
+}
+
+// 자동 민원 접수
+void compl_system::auto_receive_compl(int cnt) {
+	ifstream file_in{ "..\\Prepare data\\processed data\\my_total_data.csv" };
+	string waiting_file_route = "res/waiting list.csv";
+
+	string pic_name;
+	int comp_date;
+	pair<double, double> coordinates;
+	int waste_cnt;
+	int wastes[5];
+
+	string line;
+	istringstream word; // 참고 : https://chbuljumeok1997.tistory.com/42
+
+	output << "파일로 작성된 민원을 접수합니다. 접수 범위는 " << file_checkpoint + 1 << "번째부터 " << cnt << "개입니다.\n";
+
+	for (int i = 0; i < file_checkpoint; i++) // start 이전 부분은 아무것도 안 하고 넘김
+		getline(file_in, line);
+
+	for (int i = 0; i < cnt; i++) {
+		getline(file_in, line);
+
+		if (line.length() <= 1) {
+			break;
+		}
+
+		word = istringstream(line);
+
+		// 참고 : https://myprivatestudy.tistory.com/48
+		getline(word, line, ','); // 참고 : https://myprivatestudy.tistory.com/48
+		pic_name = line;
+
+		getline(word, line, ',');
+		comp_date = stoi(line);
+
+		getline(word, line, ',');
+		coordinates.first = stod(line);
+		getline(word, line, ',');
+		coordinates.second = stod(line);
+
+		getline(word, line, ',');
+		waste_cnt = stoi(line);
+
+		for (int i = 0; i < 5; i++) {
+			getline(word, line, ',');
+			wastes[i] = stoi(line);
+		}
+
+		complain cp{ latest_id, pic_name, comp_date, coordinates.first, coordinates.second, waste_cnt, wastes };
+
+		output << "No. " << i << "\n";
+		cp.print();
+
+		if (int(coordinates.first) != this->area_code.first || int(coordinates.second) != this->area_code.second) {
+			output << "이 민원은 관할 구역에 위치하지 않습니다. 승인 대기 목록에 추가합니다.\n\n";
+
+			// 참고 : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
+			fstream file;
+			file.open(waiting_file_route, ios::app);
+
+			file << cp.get_name() << "," << cp.get_date() << "," << cp.get_codi().first << "," << cp.get_codi().second << "," << cp.get_wcnt() << ",";
+			for (int i = 0; i < 5; i++) {
+				file << cp.wastes[i] << (i < 4 ? "," : "\n");
+			}
+
+			file.close();
+
+			continue;
+		}
+
+		latest_id += 1;
+		this->all_compls.push_back(cp);
+		this->map_comp.emplace(cp.get_name(), cp);
+		this->map_latitude.emplace(cp.get_codi().first, cp);
+		this->map_longitude.emplace(cp.get_codi().second, cp);
+		this->map_cdate_front.emplace(cp.get_date(), cp);
+		this->map_cdate_back.emplace(cp.get_date(), cp);
+
+		for (int i = 0; i < 5; i++) {
+			switch (cp.wastes[i]) {
+			case 0:
+				continue;
+			default:
+				accumed_compls_list[i].push_back(cp);
+			}
+		}
+	}
+
+	file_checkpoint += cnt;
+
+	output << "접수를 완료했습니다.\n";
 
 	return;
 }
@@ -758,7 +938,7 @@ void compl_system::load_save() {
 			wastes[i] = stoi(line);
 		}
 
-		complain cp{ pic_name, comp_date, coordinates.first, coordinates.second, waste_cnt, wastes };
+		complain cp{ latest_id++, pic_name, comp_date, coordinates.first, coordinates.second, waste_cnt, wastes };
 		this->all_compls.push_back(cp);
 		this->map_comp.emplace(cp.get_name(), cp);
 		this->map_latitude.emplace(cp.get_codi().first, cp);
@@ -813,4 +993,155 @@ void compl_system::save_task() {
 	output << "업무 기록이 저장되었습니다.\n";
 
 	return;
+}
+
+/* class Edge */
+
+Edge::Edge(complain a, complain b) {
+	from_id = a.get_id();
+	to_id = b.get_id();
+
+	from = a.get_codi();
+	to = b.get_codi();
+
+	w = squared_d(from, to);
+}
+
+Edge::Edge(unsigned fid, unsigned tid, pair<double, double> f, pair<double, double> t) {
+	from_id = fid;
+	to_id = tid;
+	from = f;
+	to = t;
+	w = squared_d(from, to);
+}
+
+/* class drone_graph */
+
+// 특정 정점에 연결된 간선들만 반환
+auto drone_graph::edges_from(unsigned i) const { // 특정 정점에 연결된 간선들만 반환
+	vector<Edge> edge_from_i;
+	for (auto& e : edges) {
+		if (e.from_id == i)
+			edge_from_i.push_back(e);
+	}
+	/* // 이쪽 코드도 똑같은 기능을 함
+	for (int idx = 0; idx < this->edges.size(); idx++) {
+		if (this->edges[idx].from == i)
+			edge_from_i.push_back(edges[idx]);
+	}*/
+	return edge_from_i;
+}
+
+// mst 트리에서 특정 정점에 연결된 간선들만 반환
+auto drone_graph::mst_edges_from(unsigned i) const {
+	vector<Edge> edge_from_i;
+	for (int idx = 0; idx < this->mst.size(); idx++) {
+		if (this->mst[idx].from_id == i)
+			edge_from_i.push_back(mst[idx]);
+	}
+	return edge_from_i;
+}
+
+// 방향 간선 추가
+void drone_graph::add(Edge& e) {
+	if (e.from_id >= 0 && e.from_id <= v && e.to_id >= 0 && e.to_id <= v)
+		this->edges.push_back(e);
+	else
+		error(_error::shut_down, "정점 범위 초과");
+
+	return;
+}
+
+// 무방향 간선 추가
+void drone_graph::add_undir(Edge& e) {
+	if (e.from_id >= 0 && e.from_id <= v && e.to_id >= 0 && e.to_id <= v) {
+		this->edges.push_back(e);
+		this->edges.push_back(Edge(e.to_id, e.from_id, e.to, e.from));
+	}
+	else
+		error(_error::shut_down, "정점 범위 초과");
+
+	return;
+}
+
+// 최소 신장 트리 출력
+void drone_graph::print_mst(vector<complain>& c_list) {
+	for (int i = 0; i <= mst.size(); i++) {
+		output << "# " << (i != 0 ? to_string(c_list[i - 1].get_id()) : "station") << " : "; // 정점 번호
+		vector<Edge> edge = this->drone_graph::mst_edges_from(i); // 정점에 연결된 간선 가져오기
+		for (auto& e : edge)
+			output << "(" << (e.to_id != 0 ? to_string(c_list[e.to_id - 1].get_id()) : "station") << ", " << e.w << ")  "; // 정점에 연결된 간선 출력
+		output << "\n";
+	}
+	return;
+}
+
+// 프림 알고리즘으로 최소 신장 트리 생성 : https://yabmoons.tistory.com/363
+void drone_graph::prim_tree() {
+	priority_queue<Edge, vector<Edge>, cmp> que;
+	vector<Edge> edge_from_i = edges_from(0);
+
+	mst.clear();
+	visited.assign(v, false);
+
+	for (Edge e : edge_from_i)
+		que.push(e);
+
+	visited[0] = true;
+
+	while (!que.empty()) {
+		Edge curr = que.top();
+		que.pop();
+
+		if (!visited[curr.to_id]) {
+			visited[curr.to_id] = true;
+			mst.push_back(curr);
+			edge_from_i = edges_from(curr.to_id);
+			for (Edge e : edge_from_i)
+				if (!visited[e.to_id])
+					que.push(e);
+		}
+	}
+
+	// 탐색을 끝낸 후 방문 여부 표시를 모두 지움
+	visited.assign(v, false);
+
+	return;
+}
+
+// DFS로 최소 신장 트리 전부 방문
+void drone_graph::fly_dfs_drone(vector<complain>& c_list) {
+	string route = "";
+	stack<pair<unsigned, unsigned>> s; // first는 방문해야 할 노드, second는 직전에 방문한 노드
+
+	visited.assign(v, false);
+
+	s.emplace(0, 0);
+
+	output << "DFS 경로 탐색을 시작합니다.\n";
+
+	while (!s.empty()) {
+		pair<unsigned, unsigned> curr = s.top();
+		s.pop();
+
+		if (!visited[curr.first]) {
+			visited[curr.first] = true;
+			if (curr.first == 0)
+				route += "station   ";
+			else
+				route += (to_string(c_list[curr.first - 1].get_id()) + "   ");
+
+			auto connected_edges = mst_edges_from(curr.first);
+			for (auto e : connected_edges) {
+				s.emplace(e.to_id, curr.first);
+			}
+		}
+	}
+
+	// 탐색을 끝낸 후 방문 여부 표시를 모두 지움
+	visited.assign(v, false);
+
+	// 탐색 결과 출력
+	output << "DFS route : " << route << "\n";
+	output << "----------\n";
 }

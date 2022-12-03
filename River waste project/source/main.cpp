@@ -26,7 +26,7 @@ string currentDateTime() {
 
 int main() {
 	// 빠른 입출력
-	ios::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	ios::sync_with_stdio(false); input.tie(NULL); cout.tie(NULL);
 
 	// 코드 실행 시간 측정 : https://scarlettb.tistory.com/5
 	clock_t clock_start, clock_finish;
@@ -53,7 +53,7 @@ int main() {
 	compl_system system;
 	system.system_on(); // 정상 실행 확인함
 
-	system.receive_compl(); // 정상 실행 확인함
+	// system.receive_compl(); // 정상 실행 확인함
 
 	// system.save_task(); // 정상 실행 확인함, 실행 후 데이터 파일이 변경되기 때문에 주석 처리
 
@@ -65,6 +65,12 @@ int main() {
 
 	system.clear_compls(); // 코드 1 : 누적 민원 있음, 처리 수량 미달, 강제 처리
 	system.clear_compls(); // 코드 3 : 누적 민원 없음, 오류 처리 테스트
+
+	system.view_all();
+
+	system.auto_receive_compl(5000);
+
+	system.clear_compls();
 
 	system.view_all();
 

@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\Prepare data\processed data\my_total_data.csv" />
     <None Include="res\37_127.csv" />
+    <None Include="res\waiting list.csv" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\input.txt" />

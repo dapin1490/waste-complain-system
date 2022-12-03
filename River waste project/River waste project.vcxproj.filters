@@ -18,6 +18,12 @@
     <None Include="res\37_127.csv">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="..\Prepare data\processed data\my_total_data.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\waiting list.csv">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\input.txt">
