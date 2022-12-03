@@ -65,6 +65,14 @@ void error(_error code, string message="") {
 	exit(1); // 프로그램 비정상 종료
 }
 
+int date_to_int(time_t d) {
+	int dint;
+	tm dtm;
+	errno_t is_valid = localtime_s(&dtm, &d);
+	dint = (dtm.tm_year + 1900) * 10000 + (dtm.tm_mon + 1) * 100 + dtm.tm_mday;
+	return dint;
+}
+
 double squared_d(pair<double, double> a, pair<double, double> b) {
 	return pow(b.first - a.first, 2) + pow(b.second - a.second, 2);
 }
@@ -735,6 +743,7 @@ void compl_system::receive_compl() {
 		// 참고 : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
 		fstream file;
 		file.open(waiting_file_route, ios::app);
+		// ofstream file{ waiting_file_route };
 
 		file << pn << "," << cdate << "," << x << "," << y << "," << wcnt << ",";
 		for (int i = 0; i < 5; i++) {
@@ -829,7 +838,9 @@ void compl_system::auto_receive_compl(int cnt) {
 			fstream file;
 			file.open(waiting_file_route, ios::app);
 
-			file << cp.get_name() << "," << cp.get_date() << "," << cp.get_codi().first << "," << cp.get_codi().second << "," << cp.get_wcnt() << ",";
+			// ofstream file{ waiting_file_route };
+
+			file << cp.get_name() << "," << date_to_int(cp.get_date()) << "," << cp.get_codi().first << "," << cp.get_codi().second << "," << cp.get_wcnt() << ",";
 			for (int i = 0; i < 5; i++) {
 				file << cp.wastes[i] << (i < 4 ? "," : "\n");
 			}

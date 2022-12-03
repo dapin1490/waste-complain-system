@@ -32,6 +32,11 @@ int main() {
 	clock_t clock_start, clock_finish;
 	double clock_duration;
 
+	// waiting list 초기화
+	ofstream wfile{ "res\\waiting list.csv" };
+	wfile << "";
+	wfile.close();
+
 	output << "main.cpp 실행 시각 : " << currentDateTime() << "\n\n";
 
 	clock_start = clock();
