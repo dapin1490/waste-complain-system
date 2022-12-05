@@ -1,6 +1,9 @@
 # waste-complain-system
 
-프로젝트 초안 참고 : <a href="https://dapin1490.github.io/satinbower/posts/it-dst-project-plan/" target="_blank">[하천 쓰레기 프로젝트] 프로젝트 구현 계획</a>  
+## 관련 블로그 글 보기
+- <a href="https://dapin1490.github.io/satinbower/posts/it-data-structure-training-project/" target="_blank">[하천 쓰레기 프로젝트] 프로젝트 개요</a>
+- <a href="https://dapin1490.github.io/satinbower/posts/it-dst-project-plan/" target="_blank">[하천 쓰레기 프로젝트] 프로젝트 구현 계획</a>
+- <a href="https://dapin1490.github.io/satinbower/posts/it-dst-project-end/" target="_blank">[하천 쓰레기 프로젝트] 프로젝트 마무리</a>
 
 ## 주제
 하천 쓰레기 민원 처리 시스템 만들기
@@ -29,3 +32,16 @@
 [outlier_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/outlier_processed_data.csv) : 위의 [pre_processed_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/pre_processed_data.csv)에서 이상치 제거한 파일. 전체 샘플 중 이상치는 극히 일부일 것으로 예상되기 때문에 최대한 많은 샘플을 남기려고 했음. 이에 대한 문의가 있다면 issue로 올려주시기 바람.  
   
 [my_total_data.csv](https://github.com/dapin1490/waste-complain-system/blob/main/Prepare%20data/processed%20data/my_total_data.csv) : 내 프로젝트에 필요한 형식으로 처리한 데이터. 헤더와 인덱스가 없고 column은 &#91;`파일명, 날짜(8자리 숫자), 경도, 위도, 포함된 쓰레기 종류 수, 각 쓰레기 유형별 유무`&#93; 순서로 구성되어 있다.  
+
+## 결과 및 효과
+결과 및 효과를 서술하기에 앞서, 본 프로젝트에서 의미하는 결과 및 효과에 대해 정의한다. 본 프로젝트의 결과 및 효과는 본 프로젝트를 이용함으로써 얻을 수 있는 이득을 말하는 것으로 크게 유형 효과와 무형 효과로 나뉘며, 유형 효과는 설득력 있는 수치적 근거를 들어 계산할 수 있는 이득을 의미하고 무형 효과는 수치로 계산할 수 없는 이득을 의미한다.  
+
+- 유형 효과  
+  - 드론의 경로를 먼저 입력한 후 자동으로 운행하게 함으로써 드론 조종 인력의 인건비를 절감할 수 있다.
+- 무형 효과  
+  - 하천 쓰레기에 대한 민원 처리 과정 대부분을 프로그램이 자동으로 수행하게 함으로써 민원 처리 인력이 다른 업무에 더 집중할 수 있게 한다.
+
+## 부족한 점
+- 검색 기능 미구현
+- 승인 대기 목록에 저장하는 기능은 구현했지만 시간 문제로 승인 대기 목록을 다시 불러오는 기능은 구현하지 않았다.
+- 누적된 쓰레기 수가 지정치를 넘어서면 자동으로 쓰레기 처리를 권장하는 기능을 구현하고 싶었지만 시간이 부족했다.
