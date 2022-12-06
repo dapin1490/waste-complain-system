@@ -81,13 +81,15 @@ private:
 	string pic_name; // 사진 이름(필요시 절대/상대 파일 경로 포함, 사진 크기를 비롯해 사진 파일 자체에 대한 각종 정보는 원본 파일의 정보에 포함된다고 본다)
 	time_t rawtime; // 민원 신고 날짜(time_t)
 	tm comp_date; // 민원 신고 날짜(tm)
-	errno_t is_valid_date; // 민원 신고 날짜가 오류 없이 저장돼있는지
+	errno_t is_valid_date; // 민원 신고 날짜가 오류 없이 저장돼있는지 : 비주얼 스튜디오에서 지원하는 오류 코드다
 	pair<double, double> coordinates; // 사진 좌표
 	int waste_cnt; // 포함된 쓰레기의 종류 수
 public:
 	int wastes[5]; // 멤버 변수지만 어차피 getter를 써도 포인터로 전달되어 원본 수정이 가능하니 public 변수로 사용
+	// 나중에 const를 쓰면 함수에서 사용하는 값을 바꿀 수 없다는 것을 배웠지만 이미 프로젝트를 상당부분 만들어둔 상태였다
 
 public:
+	// 기본 생성자 포함 3종류
 	complain() { pic_name = "None"; }
 	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, int* ws);
 	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, string ws);
@@ -104,6 +106,7 @@ public:
 	void print();
 };
 
+// 민원 삭제 처리를 할 때 벡터의 remove_if에서 사용하는데, 클래스 내부 함수로 선언하면 오류가 나서 전역 함수로 선언
 bool is_wcnt_zero(complain c) {
 	if (c.get_wcnt() == 0)
 		return true;
@@ -126,7 +129,7 @@ private:
 	multimap<time_t, complain> map_cdate_back; // 민원 접수 날짜 기준(오래된순) 전체 민원 멀티맵
 	// 맵 내림차순(greater) 참고 : https://0xd00d00.github.io/2021/08/22/map_value_reverse.html
 
-	// 두 민원이 서로 같은지 확인 : 사진 이름과 민원 날짜를 기본키로 사용하기로 함
+	// 두 민원이 서로 같은지 확인 : 민원 id 확인. 원래는 사진 이름과 민원 날짜 등 민원의 정보를 비교했지만 번거롭고 오류 가능성이 높아서 바꿈
 	bool is_same(complain& a, complain& b);
 
 	// 정상 실행 확인
@@ -145,14 +148,15 @@ private:
 	// 누적 민원 처리
 	void clear_compls(int waste_code);
 
-	// 누적 민원 물리적 처리
+	// 누적 민원 물리적 처리(드론 경로 탐색 및 생성)
 	void call_drone(vector<complain>& c_list);
 public:
+	// 기본 생성자 포함 2종류
 	compl_system();
 	compl_system(int x, int y);
 
-	pair<int, int> get_acode() { return area_code; }
-	void set_thresh(int n) { thresh = n; }
+	pair<int, int> get_acode() { return area_code; } // 지역 코드 반환
+	void set_thresh(int n) { thresh = n; } // 누적 민원 처리 기준값 변경 : 구현 부족으로 실제 사용되지는 않음
 
 	// 정상 실행 확인
 	// 시스템 시작 : 사용자에게 지역 코드를 입력받고 기존 데이터 유무 확인, 새 로그 생성 등
@@ -162,7 +166,7 @@ public:
 	// 민원 접수
 	void receive_compl();
 
-	// 자동 민원 접수
+	// 자동 민원 접수 : 민원 csv 파일 사용하기 위해 만듦
 	void auto_receive_compl(int cnt = 0);
 
 	// 기본 실행 확인
