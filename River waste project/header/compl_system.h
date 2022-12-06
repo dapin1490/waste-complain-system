@@ -3,19 +3,17 @@
 #include <iostream>
 #include <vector> // vector
 #include <utility> // pair
-#include <algorithm> // copy, equal(¹Ì»ç¿ë)
-#include <map> // multimap Âü°í : https://blockdmask.tistory.com/88
-#include <io.h> // ÆÄÀÏ Á¸Àç È®ÀÎ Âü°í : https://tw0226.tistory.com/121
+#include <algorithm> // copy, equal(ë¯¸ì‚¬ìš©)
+#include <map> // multimap ì°¸ê³  : https://blockdmask.tistory.com/88
+#include <io.h> // íŒŒì¼ ì¡´ì¬ í™•ì¸ ì°¸ê³  : https://tw0226.tistory.com/121
 #include <string> // to_string
-#include <fstream> // ÆÄÀÏ ÀÔÃâ·Â
-#include <ctime> // ½Ã°£ µ¥ÀÌÅÍ °ü¸®
-#include <sstream> // ¹®ÀÚ¿­ ÆÄ½Ì
+#include <fstream> // íŒŒì¼ ì…ì¶œë ¥
+#include <ctime> // ì‹œê°„ ë°ì´í„° ê´€ë¦¬
+#include <sstream> // ë¬¸ìì—´ íŒŒì‹±
 #include <climits> // INF
-#include <queue> // ¿ì¼±¼øÀ§ Å¥
+#include <queue> // ìš°ì„ ìˆœìœ„ í
 #include <stack>
 using namespace std;
-
-// ÇàÁ¤µ¿ÄÚµå ÃâÃ³ : https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000052&nttId=94196
 
 enum class _error : int{shut_down, ValueErrorInt, ValueErrorChar, UnknownError};
 
@@ -37,12 +35,12 @@ string currentDateTime() {
 		return buffer;
 	}
 	else {
-		return "ÇöÀç ½Ã°£À» ¾òÀ» ¼ö ¾øÀ½";
+		return "í˜„ì¬ ì‹œê°„ì„ ì–»ì„ ìˆ˜ ì—†ìŒ";
 	}
 }
 */
 
-// C++ ¿¡·¯ ¸Ş½ÃÁö Âü°í : https://learn.microsoft.com/ko-kr/cpp/error-messages/compiler-errors-1/c-cpp-build-errors?view=msvc-170
+// C++ ì—ëŸ¬ ë©”ì‹œì§€ ì°¸ê³  : https://learn.microsoft.com/ko-kr/cpp/error-messages/compiler-errors-1/c-cpp-build-errors?view=msvc-170
 void error(_error code, string message="") {
 	if (message.length() > 1)
 		output << "\nerror message: " << message << "\n";
@@ -51,18 +49,18 @@ void error(_error code, string message="") {
 
 	switch (code) {
 	case _error::shut_down:
-		output << "ÇÁ·Î±×·¥ ºñÁ¤»ó Á¾·á\n";
+		output << "í”„ë¡œê·¸ë¨ ë¹„ì •ìƒ ì¢…ë£Œ\n";
 		break;
-	case _error::ValueErrorInt: // Àß¸øµÈ ÀÔ·Â - int
-		output << "ValueErrorInt: int °ªÀÌ ÀÔ·ÂµÇ¾î¾ß ÇÕ´Ï´Ù.\n";
+	case _error::ValueErrorInt: // ì˜ëª»ëœ ì…ë ¥ - int
+		output << "ValueErrorInt: int ê°’ì´ ì…ë ¥ë˜ì–´ì•¼ í•©ë‹ˆë‹¤.\n";
 		break;
-	case _error::ValueErrorChar: // Àß¸øµÈ ÀÔ·Â - char
-		output << "ValueErrorChar: char °ªÀÌ ÀÔ·ÂµÇ¾î¾ß ÇÕ´Ï´Ù.\n";
+	case _error::ValueErrorChar: // ì˜ëª»ëœ ì…ë ¥ - char
+		output << "ValueErrorChar: char ê°’ì´ ì…ë ¥ë˜ì–´ì•¼ í•©ë‹ˆë‹¤.\n";
 		break;
 	default:
-		output << "UnknownError: ¾Ë ¼ö ¾ø´Â ¿À·ù\n";
+		output << "UnknownError: ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜\n";
 	}
-	exit(1); // ÇÁ·Î±×·¥ ºñÁ¤»ó Á¾·á
+	exit(1); // í”„ë¡œê·¸ë¨ ë¹„ì •ìƒ ì¢…ë£Œ
 }
 
 int date_to_int(time_t d) {
@@ -77,32 +75,32 @@ double squared_d(pair<double, double> a, pair<double, double> b) {
 	return pow(b.first - a.first, 2) + pow(b.second - a.second, 2);
 }
 
-class complain { // ¹Î¿ø Å¬·¡½º
+class complain { // ë¯¼ì› í´ë˜ìŠ¤
 private:
-	unsigned id; // ¹Î¿øÀ» ±¸ºĞÇÏ±â À§ÇÑ id
-	string pic_name; // »çÁø ÀÌ¸§(ÇÊ¿ä½Ã Àı´ë/»ó´ë ÆÄÀÏ °æ·Î Æ÷ÇÔ, »çÁø Å©±â¸¦ ºñ·ÔÇØ »çÁø ÆÄÀÏ ÀÚÃ¼¿¡ ´ëÇÑ °¢Á¾ Á¤º¸´Â ¿øº» ÆÄÀÏÀÇ Á¤º¸¿¡ Æ÷ÇÔµÈ´Ù°í º»´Ù)
-	time_t rawtime; // ¹Î¿ø ½Å°í ³¯Â¥(time_t)
-	tm comp_date; // ¹Î¿ø ½Å°í ³¯Â¥(tm)
-	errno_t is_valid_date; // ¹Î¿ø ½Å°í ³¯Â¥°¡ ¿À·ù ¾øÀÌ ÀúÀåµÅÀÖ´ÂÁö
-	pair<double, double> coordinates; // »çÁø ÁÂÇ¥
-	int waste_cnt; // Æ÷ÇÔµÈ ¾²·¹±âÀÇ Á¾·ù ¼ö
+	unsigned id; // ë¯¼ì›ì„ êµ¬ë¶„í•˜ê¸° ìœ„í•œ id
+	string pic_name; // ì‚¬ì§„ ì´ë¦„(í•„ìš”ì‹œ ì ˆëŒ€/ìƒëŒ€ íŒŒì¼ ê²½ë¡œ í¬í•¨, ì‚¬ì§„ í¬ê¸°ë¥¼ ë¹„ë¡¯í•´ ì‚¬ì§„ íŒŒì¼ ìì²´ì— ëŒ€í•œ ê°ì¢… ì •ë³´ëŠ” ì›ë³¸ íŒŒì¼ì˜ ì •ë³´ì— í¬í•¨ëœë‹¤ê³  ë³¸ë‹¤)
+	time_t rawtime; // ë¯¼ì› ì‹ ê³  ë‚ ì§œ(time_t)
+	tm comp_date; // ë¯¼ì› ì‹ ê³  ë‚ ì§œ(tm)
+	errno_t is_valid_date; // ë¯¼ì› ì‹ ê³  ë‚ ì§œê°€ ì˜¤ë¥˜ ì—†ì´ ì €ì¥ë¼ìˆëŠ”ì§€
+	pair<double, double> coordinates; // ì‚¬ì§„ ì¢Œí‘œ
+	int waste_cnt; // í¬í•¨ëœ ì“°ë ˆê¸°ì˜ ì¢…ë¥˜ ìˆ˜
 public:
-	int wastes[5]; // ¸â¹ö º¯¼öÁö¸¸ ¾îÂ÷ÇÇ getter¸¦ ½áµµ Æ÷ÀÎÅÍ·Î Àü´ŞµÇ¾î ¿øº» ¼öÁ¤ÀÌ °¡´ÉÇÏ´Ï public º¯¼ö·Î »ç¿ë
+	int wastes[5]; // ë©¤ë²„ ë³€ìˆ˜ì§€ë§Œ ì–´ì°¨í”¼ getterë¥¼ ì¨ë„ í¬ì¸í„°ë¡œ ì „ë‹¬ë˜ì–´ ì›ë³¸ ìˆ˜ì •ì´ ê°€ëŠ¥í•˜ë‹ˆ public ë³€ìˆ˜ë¡œ ì‚¬ìš©
 
 public:
 	complain() { pic_name = "None"; }
 	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, int* ws);
 	complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, string ws);
 
-	unsigned get_id() { return id; } // ¹Î¿ø id ¹İÈ¯
-	string get_name() { return pic_name; } // »çÁø ÀÌ¸§ ¹İÈ¯
-	time_t get_date() { return rawtime; } // ¹Î¿ø ½Å°í ³¯Â¥ ¹İÈ¯
-	pair<double, double> get_codi() { return coordinates; } // »çÁø ÁÂÇ¥ ¹İÈ¯(pair)
-	int get_wcnt() { return waste_cnt; } // Æ÷ÇÔ ¾²·¹±â Á¾·ù ¼ö ¹İÈ¯
+	unsigned get_id() { return id; } // ë¯¼ì› id ë°˜í™˜
+	string get_name() { return pic_name; } // ì‚¬ì§„ ì´ë¦„ ë°˜í™˜
+	time_t get_date() { return rawtime; } // ë¯¼ì› ì‹ ê³  ë‚ ì§œ ë°˜í™˜
+	pair<double, double> get_codi() { return coordinates; } // ì‚¬ì§„ ì¢Œí‘œ ë°˜í™˜(pair)
+	int get_wcnt() { return waste_cnt; } // í¬í•¨ ì“°ë ˆê¸° ì¢…ë¥˜ ìˆ˜ ë°˜í™˜
 
-	void rename(string new_name) { pic_name = new_name; } // »çÁø ÀÌ¸§ º¯°æ
-	void update_wcnt(int num) { waste_cnt += num; } // Æ÷ÇÔ ¾²·¹±â Á¾·ù ¼ö º¯°æ
-	// ¹Î¿ø Á¤º¸ Ãâ·Â
+	void rename(string new_name) { pic_name = new_name; } // ì‚¬ì§„ ì´ë¦„ ë³€ê²½
+	void update_wcnt(int num) { waste_cnt += num; } // í¬í•¨ ì“°ë ˆê¸° ì¢…ë¥˜ ìˆ˜ ë³€ê²½
+	// ë¯¼ì› ì •ë³´ ì¶œë ¥
 	void print();
 };
 
@@ -112,42 +110,42 @@ bool is_wcnt_zero(complain c) {
 	return false;
 }
 
-class compl_system { // ÇÏÃµ ¾²·¹±â ¹Î¿ø Ã³¸® ½Ã½ºÅÛ
+class compl_system { // í•˜ì²œ ì“°ë ˆê¸° ë¯¼ì› ì²˜ë¦¬ ì‹œìŠ¤í…œ
 private:
-	unsigned latest_id; // ±¸¿ªÀÇ ½ÃÀÛÁ¡À» id 0À¸·Î ÇÏ±â À§ÇØ 1ºÎÅÍ ½ÃÀÛ
-	pair<int, int> area_code; // Áö¿ª ÄÚµå(À§µµ, °æµµ Á¤¼ö ºÎºĞ)
-	unsigned thresh; // ¹Î¿ø Ã³¸® ÃÖ¼Ò ´ÜÀ§ : ´©ÀûµÈ ¹Î¿øÀÇ ¼ö°¡ ÀÌ ¼öº¸´Ù Å¬ ¶§ Ã³¸®. ±âº»°ªÀº 20
-	vector<vector<complain>> accumed_compls_list; // ¾²·¹±â ºĞ·ùº° ´©Àû ¹Î¿ø ¹è¿­
-	unsigned file_checkpoint; // ÀüÃ¼ ¹Î¿ø ÆÄÀÏ ¾îµğ±îÁö ÀĞ¾ú´ÂÁö Ç¥½Ã
+	unsigned latest_id; // êµ¬ì—­ì˜ ì‹œì‘ì ì„ id 0ìœ¼ë¡œ í•˜ê¸° ìœ„í•´ 1ë¶€í„° ì‹œì‘
+	pair<int, int> area_code; // ì§€ì—­ ì½”ë“œ(ìœ„ë„, ê²½ë„ ì •ìˆ˜ ë¶€ë¶„)
+	unsigned thresh; // ë¯¼ì› ì²˜ë¦¬ ìµœì†Œ ë‹¨ìœ„ : ëˆ„ì ëœ ë¯¼ì›ì˜ ìˆ˜ê°€ ì´ ìˆ˜ë³´ë‹¤ í´ ë•Œ ì²˜ë¦¬. ê¸°ë³¸ê°’ì€ 20
+	vector<vector<complain>> accumed_compls_list; // ì“°ë ˆê¸° ë¶„ë¥˜ë³„ ëˆ„ì  ë¯¼ì› ë°°ì—´
+	unsigned file_checkpoint; // ì „ì²´ ë¯¼ì› íŒŒì¼ ì–´ë””ê¹Œì§€ ì½ì—ˆëŠ”ì§€ í‘œì‹œ
 
-	vector<complain> all_compls; // ÀüÃ¼ ¹Î¿ø º¤ÅÍ
-	multimap<string, complain> map_comp; // »çÁø ÀÌ¸§ ±âÁØ ÀüÃ¼ ¹Î¿ø ¸ÖÆ¼¸Ê
-	multimap<double, complain> map_latitude; // À§µµ ±âÁØ ÀüÃ¼ ¹Î¿ø ¸ÖÆ¼¸Ê
-	multimap<double, complain> map_longitude; // °æµµ ±âÁØ ÀüÃ¼ ¹Î¿ø ¸ÖÆ¼¸Ê
-	multimap<time_t, complain, greater<time_t>> map_cdate_front; // ¹Î¿ø Á¢¼ö ³¯Â¥ ±âÁØ(ÃÖ±Ù¼ø) ÀüÃ¼ ¹Î¿ø ¸ÖÆ¼¸Ê
-	multimap<time_t, complain> map_cdate_back; // ¹Î¿ø Á¢¼ö ³¯Â¥ ±âÁØ(¿À·¡µÈ¼ø) ÀüÃ¼ ¹Î¿ø ¸ÖÆ¼¸Ê
-	// ¸Ê ³»¸²Â÷¼ø(greater) Âü°í : https://0xd00d00.github.io/2021/08/22/map_value_reverse.html
+	vector<complain> all_compls; // ì „ì²´ ë¯¼ì› ë²¡í„°
+	multimap<string, complain> map_comp; // ì‚¬ì§„ ì´ë¦„ ê¸°ì¤€ ì „ì²´ ë¯¼ì› ë©€í‹°ë§µ
+	multimap<double, complain> map_latitude; // ìœ„ë„ ê¸°ì¤€ ì „ì²´ ë¯¼ì› ë©€í‹°ë§µ
+	multimap<double, complain> map_longitude; // ê²½ë„ ê¸°ì¤€ ì „ì²´ ë¯¼ì› ë©€í‹°ë§µ
+	multimap<time_t, complain, greater<time_t>> map_cdate_front; // ë¯¼ì› ì ‘ìˆ˜ ë‚ ì§œ ê¸°ì¤€(ìµœê·¼ìˆœ) ì „ì²´ ë¯¼ì› ë©€í‹°ë§µ
+	multimap<time_t, complain> map_cdate_back; // ë¯¼ì› ì ‘ìˆ˜ ë‚ ì§œ ê¸°ì¤€(ì˜¤ë˜ëœìˆœ) ì „ì²´ ë¯¼ì› ë©€í‹°ë§µ
+	// ë§µ ë‚´ë¦¼ì°¨ìˆœ(greater) ì°¸ê³  : https://0xd00d00.github.io/2021/08/22/map_value_reverse.html
 
-	// µÎ ¹Î¿øÀÌ ¼­·Î °°ÀºÁö È®ÀÎ : »çÁø ÀÌ¸§°ú ¹Î¿ø ³¯Â¥¸¦ ±âº»Å°·Î »ç¿ëÇÏ±â·Î ÇÔ
+	// ë‘ ë¯¼ì›ì´ ì„œë¡œ ê°™ì€ì§€ í™•ì¸ : ì‚¬ì§„ ì´ë¦„ê³¼ ë¯¼ì› ë‚ ì§œë¥¼ ê¸°ë³¸í‚¤ë¡œ ì‚¬ìš©í•˜ê¸°ë¡œ í•¨
 	bool is_same(complain& a, complain& b);
 
-	// Á¤»ó ½ÇÇà È®ÀÎ
-	// Æ¯Á¤ ºĞ·ùÀÇ ¾²·¹±â ¹Î¿øÀÌ ÃæºĞÈ÷ ¸¹¾Æ Ã³¸®ÇØµµ µÉ¸¸ÇÑÁö È®ÀÎ
+	// ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// íŠ¹ì • ë¶„ë¥˜ì˜ ì“°ë ˆê¸° ë¯¼ì›ì´ ì¶©ë¶„íˆ ë§ì•„ ì²˜ë¦¬í•´ë„ ë ë§Œí•œì§€ í™•ì¸
 	bool is_enough(int waste_code);
 	
-	// »çÁø ÀÌ¸§¼ø ¸ğµç ¹Î¿ø Á¶È¸
+	// ì‚¬ì§„ ì´ë¦„ìˆœ ëª¨ë“  ë¯¼ì› ì¡°íšŒ
 	void view_all(multimap<string, complain>& mc);
-	// À§µµ, °æµµ¼ø ¸ğµç ¹Î¿ø Á¶È¸
+	// ìœ„ë„, ê²½ë„ìˆœ ëª¨ë“  ë¯¼ì› ì¡°íšŒ
 	void view_all(multimap<double, complain> ml, int code);
-	// ¹Î¿ø ³¯Â¥ ¿À¸§Â÷¼ø Á¶È¸
+	// ë¯¼ì› ë‚ ì§œ ì˜¤ë¦„ì°¨ìˆœ ì¡°íšŒ
 	void view_all(multimap<time_t, complain, greater<time_t>> mcf);
-	// ¹Î¿ø ³¯Â¥ ³»¸²Â÷¼ø Á¶È¸
+	// ë¯¼ì› ë‚ ì§œ ë‚´ë¦¼ì°¨ìˆœ ì¡°íšŒ
 	void view_all(multimap<time_t, complain> mcb);
 
-	// ´©Àû ¹Î¿ø Ã³¸®
+	// ëˆ„ì  ë¯¼ì› ì²˜ë¦¬
 	void clear_compls(int waste_code);
 
-	// ´©Àû ¹Î¿ø ¹°¸®Àû Ã³¸®
+	// ëˆ„ì  ë¯¼ì› ë¬¼ë¦¬ì  ì²˜ë¦¬
 	void call_drone(vector<complain>& c_list);
 public:
 	compl_system();
@@ -156,61 +154,61 @@ public:
 	pair<int, int> get_acode() { return area_code; }
 	void set_thresh(int n) { thresh = n; }
 
-	// Á¤»ó ½ÇÇà È®ÀÎ
-	// ½Ã½ºÅÛ ½ÃÀÛ : »ç¿ëÀÚ¿¡°Ô Áö¿ª ÄÚµå¸¦ ÀÔ·Â¹Ş°í ±âÁ¸ µ¥ÀÌÅÍ À¯¹« È®ÀÎ, »õ ·Î±× »ı¼º µî
+	// ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// ì‹œìŠ¤í…œ ì‹œì‘ : ì‚¬ìš©ìì—ê²Œ ì§€ì—­ ì½”ë“œë¥¼ ì…ë ¥ë°›ê³  ê¸°ì¡´ ë°ì´í„° ìœ ë¬´ í™•ì¸, ìƒˆ ë¡œê·¸ ìƒì„± ë“±
 	void system_on();
 
-	// ÀÏºÎ Á¤»ó ½ÇÇà È®ÀÎ
-	// ¹Î¿ø Á¢¼ö
+	// ì¼ë¶€ ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// ë¯¼ì› ì ‘ìˆ˜
 	void receive_compl();
 
-	// ÀÚµ¿ ¹Î¿ø Á¢¼ö
+	// ìë™ ë¯¼ì› ì ‘ìˆ˜
 	void auto_receive_compl(int cnt = 0);
 
-	// ±âº» ½ÇÇà È®ÀÎ
-	// Á¤·Ä ±âÁØ(sort_by)¿¡ µû¸¥ ÀüÃ¼ ¹Î¿ø Á¶È¸(Ãâ·ÂÇÏ°Ô ÇÒ °ÍÀÌ¹Ç·Î ¹İÈ¯°ª ¾øÀ½)
+	// ê¸°ë³¸ ì‹¤í–‰ í™•ì¸
+	// ì •ë ¬ ê¸°ì¤€(sort_by)ì— ë”°ë¥¸ ì „ì²´ ë¯¼ì› ì¡°íšŒ(ì¶œë ¥í•˜ê²Œ í•  ê²ƒì´ë¯€ë¡œ ë°˜í™˜ê°’ ì—†ìŒ)
 	void view_all();
 
-	/*// ¿ì¼±¼øÀ§ ÃÖÇÏÀ§. ±¸ÇöÇÏÁö ¾ÊÀ» °¡´É¼º ³ôÀ½
-	// ¹ÌÈ®ÀÎ
-	// °Ë»ö ±âÁØ(search_by)¿¡ µû¸¥ Æ¯Á¤ ¹Î¿ø °Ë»ö
+	/*// ìš°ì„ ìˆœìœ„ ìµœí•˜ìœ„. êµ¬í˜„í•˜ì§€ ì•Šì„ ê°€ëŠ¥ì„± ë†’ìŒ
+	// ë¯¸í™•ì¸
+	// ê²€ìƒ‰ ê¸°ì¤€(search_by)ì— ë”°ë¥¸ íŠ¹ì • ë¯¼ì› ê²€ìƒ‰
 	void search_compl() {
-		// °¡´ÉÇÑ °Ë»ö ±âÁØ : »çÁø ÀÌ¸§(¿ÀÅ¸ ºÒÇã), À§µµ, °æµµ, Á¢¼ö ³¯Â¥
-		// º¤ÅÍ Á¤·Ä ÈÄ ¼øÈ¸
+		// ê°€ëŠ¥í•œ ê²€ìƒ‰ ê¸°ì¤€ : ì‚¬ì§„ ì´ë¦„(ì˜¤íƒ€ ë¶ˆí—ˆ), ìœ„ë„, ê²½ë„, ì ‘ìˆ˜ ë‚ ì§œ
+		// ë²¡í„° ì •ë ¬ í›„ ìˆœíšŒ
 		return;
 	}
 	*/
 
-	// Á¤»ó ½ÇÇà È®ÀÎ
-	// Æ¯Á¤ ºĞ·ùÀÇ ¾²·¹±â °ü·Ã ¹Î¿ø ÀÏ°ı Ã³¸® : Ã³¸® ÈÄ ÀüÃ¼ ¹Î¿ø º¤ÅÍ³ª ´Ù¸¥ ¸Ê µî¿¡¼­ NULLÀ» Á¦°ÅÇÏ´Â °úÁ¤ÀÌ ÇÊ¿äÇÔ
+	// ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// íŠ¹ì • ë¶„ë¥˜ì˜ ì“°ë ˆê¸° ê´€ë ¨ ë¯¼ì› ì¼ê´„ ì²˜ë¦¬ : ì²˜ë¦¬ í›„ ì „ì²´ ë¯¼ì› ë²¡í„°ë‚˜ ë‹¤ë¥¸ ë§µ ë“±ì—ì„œ NULLì„ ì œê±°í•˜ëŠ” ê³¼ì •ì´ í•„ìš”í•¨
 	void clear_compls();
 
-	// Á¤»ó ½ÇÇà È®ÀÎ
-	// ÆÄÀÏ¿¡ ±â·ÏµÈ µ¥ÀÌÅÍ¸¦ ÅëÇÑ ÀÌÀü ¾÷¹« ±â·Ï ·Îµå. ¸Å¹ø »õ ½Ã½ºÅÛÀ» »ı¼ºÇÒ ¼ö´Â ¾øÀ¸´Ï±î.
+	// ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// íŒŒì¼ì— ê¸°ë¡ëœ ë°ì´í„°ë¥¼ í†µí•œ ì´ì „ ì—…ë¬´ ê¸°ë¡ ë¡œë“œ. ë§¤ë²ˆ ìƒˆ ì‹œìŠ¤í…œì„ ìƒì„±í•  ìˆ˜ëŠ” ì—†ìœ¼ë‹ˆê¹Œ.
 	void load_save();
 
-	// Á¤»ó ½ÇÇà È®ÀÎ
-	// ¾÷¹« ÁøÇà »óÈ²À» ÆÄÀÏ·Î ±â·Ï. ¾÷¹«¸¦ Á¾·áÇÏ°Å³ª Áß°£ ÀúÀåÀÌ ÇÊ¿äÇÒ ¶§ ½ÇÇà.
+	// ì •ìƒ ì‹¤í–‰ í™•ì¸
+	// ì—…ë¬´ ì§„í–‰ ìƒí™©ì„ íŒŒì¼ë¡œ ê¸°ë¡. ì—…ë¬´ë¥¼ ì¢…ë£Œí•˜ê±°ë‚˜ ì¤‘ê°„ ì €ì¥ì´ í•„ìš”í•  ë•Œ ì‹¤í–‰.
 	void save_task();
 
-	// ¹Ì±¸Çö
-	// ½ÂÀÎ ´ë±â ¸ñ·ÏÀ» È®ÀÎÇÏ°í °üÇÒ ±¸¿ª¿¡ ¼ÓÇÏ´Â ¹Î¿øÀ» Ãß°¡ Á¢¼öÇÔ
+	// ë¯¸êµ¬í˜„
+	// ìŠ¹ì¸ ëŒ€ê¸° ëª©ë¡ì„ í™•ì¸í•˜ê³  ê´€í•  êµ¬ì—­ì— ì†í•˜ëŠ” ë¯¼ì›ì„ ì¶”ê°€ ì ‘ìˆ˜í•¨
 	void check_waiting();
 };
 
 class Edge {
 public:
-	double w; // °Å¸®
-	unsigned from_id; // ½ÃÀÛÁ¡
-	unsigned to_id; // Á¾Á¡
-	pair<double, double> from; // ½ÃÀÛÁ¡ ÁÂÇ¥
-	pair<double, double> to; // Á¾Á¡ ÁÂÇ¥
+	double w; // ê±°ë¦¬
+	unsigned from_id; // ì‹œì‘ì 
+	unsigned to_id; // ì¢…ì 
+	pair<double, double> from; // ì‹œì‘ì  ì¢Œí‘œ
+	pair<double, double> to; // ì¢…ì  ì¢Œí‘œ
 
 	Edge(complain a, complain b);
 	Edge(unsigned fid, unsigned tid, pair<double, double> f, pair<double, double> t);
 };
 
-struct cmp { // ´ÙÀÍ½ºÆ®¶ó ¿ì¼±¼øÀ§ Å¥ ºñ±³ ¿¬»êÀÚ : °¡ÁßÄ¡°¡ Àû°í Á¤Á¡ ¹øÈ£°¡ ÀûÀº °ÍÀ» ¿ì¼±À¸·Î ÇÔ
+struct cmp { // ë‹¤ìµìŠ¤íŠ¸ë¼ ìš°ì„ ìˆœìœ„ í ë¹„êµ ì—°ì‚°ì : ê°€ì¤‘ì¹˜ê°€ ì ê³  ì •ì  ë²ˆí˜¸ê°€ ì ì€ ê²ƒì„ ìš°ì„ ìœ¼ë¡œ í•¨
 	bool operator()(Edge a, Edge b) {
 		return a.w > b.w;
 	}
@@ -218,46 +216,46 @@ struct cmp { // ´ÙÀÍ½ºÆ®¶ó ¿ì¼±¼øÀ§ Å¥ ºñ±³ ¿¬»êÀÚ : °¡ÁßÄ¡°¡ Àû°í Á¤Á¡ ¹øÈ£°¡ À
 
 class drone_graph {
 private:
-	unsigned v; // Á¤Á¡ ¼ö : id·Î »ç¿ë
-	vector<Edge> edges; // ±×·¡ÇÁ°¡ °®´Â °£¼±µé
-	vector<bool> visited; // ¹æ¹® ¿©ºÎ
-	vector<Edge> mst; // ÃÖ¼Ò ½ÅÀå Æ®¸®
-	unsigned w_code; // ¾²·¹±â ÄÚµå
+	unsigned v; // ì •ì  ìˆ˜ : idë¡œ ì‚¬ìš©
+	vector<Edge> edges; // ê·¸ë˜í”„ê°€ ê°–ëŠ” ê°„ì„ ë“¤
+	vector<bool> visited; // ë°©ë¬¸ ì—¬ë¶€
+	vector<Edge> mst; // ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬
+	unsigned w_code; // ì“°ë ˆê¸° ì½”ë“œ
 
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	drone_graph() { this->v = 0; }
 	drone_graph(unsigned v) { this->v = v; visited.resize(v); }
 
-	// ÇÔ¼ö Á¤ÀÇ¿¡ ¾²ÀÎ const : ÀÌ ÇÔ¼ö ¾È¿¡¼­ ¾²´Â °ªµéÀ» º¯°æÇÒ ¼ö ¾ø´Ù
-	unsigned size() const { return v; } // ±×·¡ÇÁ°¡ °®´Â Á¤Á¡ÀÇ ¼ö¸¦ ¹İÈ¯
-	auto& edges_from() const { return this->edges; } // ±×·¡ÇÁ°¡ °®´Â °£¼±µéÀ» ¹İÈ¯
-	// Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
+	// í•¨ìˆ˜ ì •ì˜ì— ì“°ì¸ const : ì´ í•¨ìˆ˜ ì•ˆì—ì„œ ì“°ëŠ” ê°’ë“¤ì„ ë³€ê²½í•  ìˆ˜ ì—†ë‹¤
+	unsigned size() const { return v; } // ê·¸ë˜í”„ê°€ ê°–ëŠ” ì •ì ì˜ ìˆ˜ë¥¼ ë°˜í™˜
+	auto& edges_from() const { return this->edges; } // ê·¸ë˜í”„ê°€ ê°–ëŠ” ê°„ì„ ë“¤ì„ ë°˜í™˜
+	// íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
 	auto edges_from(unsigned i) const;
-	// mst Æ®¸®¿¡¼­ Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
+	// mst íŠ¸ë¦¬ì—ì„œ íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
 	auto mst_edges_from(unsigned i) const;
 
-	// ¹æÇâ °£¼± Ãß°¡
+	// ë°©í–¥ ê°„ì„  ì¶”ê°€
 	void add(Edge& e);
 
-	// ¹«¹æÇâ °£¼± Ãß°¡
+	// ë¬´ë°©í–¥ ê°„ì„  ì¶”ê°€
 	void add_undir(Edge& e);
 
-	// ÃÖ¼Ò ½ÅÀå Æ®¸® Ãâ·Â
+	// ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ì¶œë ¥
 	void print_mst(vector<complain>& c_list);
 
-	// ÇÁ¸² ¾Ë°í¸®ÁòÀ¸·Î ÃÖ¼Ò ½ÅÀå Æ®¸® »ı¼º : https://yabmoons.tistory.com/363
+	// í”„ë¦¼ ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ìƒì„± : https://yabmoons.tistory.com/363
 	void prim_tree();
 
-	// DFS·Î ÃÖ¼Ò ½ÅÀå Æ®¸® ÀüºÎ ¹æ¹®
+	// DFSë¡œ ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ì „ë¶€ ë°©ë¬¸
 	void fly_dfs_drone(vector<complain>& c_list);
 };
 
 /* class complain */
 
 complain::complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, int* ws) {
-	// Âü°í : https://cplusplus.com/reference/ctime/mktime/
-	// Âü°í : https://www.it-note.kr/143
+	// ì°¸ê³  : https://cplusplus.com/reference/ctime/mktime/
+	// ì°¸ê³  : https://www.it-note.kr/143
 	rawtime = time(&rawtime);
 	is_valid_date = localtime_s(&comp_date, &rawtime);
 	comp_date.tm_year = cdate / 10000 - 1900;
@@ -269,13 +267,13 @@ complain::complain(unsigned id, string pn, int cdate, double x, double y, int wc
 	pic_name = pn;
 	coordinates = make_pair(x, y);
 	waste_cnt = wcnt;
-	copy(ws, ws + 5, wastes); // ¹è¿­ º¹»ç Âü°í : https://terrorjang.tistory.com/98
+	copy(ws, ws + 5, wastes); // ë°°ì—´ ë³µì‚¬ ì°¸ê³  : https://terrorjang.tistory.com/98
 
 	// print();
 }
 complain::complain(unsigned id, string pn, int cdate, double x, double y, int wcnt, string ws) {
-	// Âü°í : https://cplusplus.com/reference/ctime/mktime/
-	// Âü°í : https://www.it-note.kr/143
+	// ì°¸ê³  : https://cplusplus.com/reference/ctime/mktime/
+	// ì°¸ê³  : https://www.it-note.kr/143
 	time_t rawtime = time(&rawtime);
 	is_valid_date = localtime_s(&comp_date, &rawtime);
 	comp_date.tm_year = cdate / 10000 - 1900;
@@ -304,53 +302,53 @@ complain::complain(unsigned id, string pn, int cdate, double x, double y, int wc
 	// print();
 }
 
-// ¹Î¿ø Á¤º¸ Ãâ·Â
+// ë¯¼ì› ì •ë³´ ì¶œë ¥
 void complain::print() {
-	output << "\n¹Î¿ø id : " << id << "\n¹Î¿ø ÆÄÀÏ¸í : \"" << pic_name << "\"\n";
+	output << "\në¯¼ì› id : " << id << "\në¯¼ì› íŒŒì¼ëª… : \"" << pic_name << "\"\n";
 	if (is_valid_date == 0) {
 		char buffer[256];
 		//strftime(buffer, sizeof(buffer), "%Y-%m-%d %X", &comp_date);
 		strftime(buffer, sizeof(buffer), "%Y-%m-%d", &comp_date);
-		output << "½Å°í ÀÏÀÚ : " << buffer << "\n";
+		output << "ì‹ ê³  ì¼ì : " << buffer << "\n";
 	}
 	else {
-		output << "½Å°í ÀÏÀÚ : ¾òÀ» ¼ö ¾øÀ½\n";
+		output << "ì‹ ê³  ì¼ì : ì–»ì„ ìˆ˜ ì—†ìŒ\n";
 	}
-	output << "½Å°í ÁÂÇ¥ : (" << coordinates.first << ", " << coordinates.second << ")\n";
-	output << "Æ÷ÇÔ ¾²·¹±â Á¾·ù ¼ö : " << waste_cnt << "\n";
-	output << "ÀÏ¹İ " << (wastes[0] == 0 ? 'X' : 'O')
-		<< "   ÇÃ¶ó½ºÆ½ " << (wastes[1] == 0 ? 'X' : 'O')
-		<< "   Äµ " << (wastes[2] == 0 ? 'X' : 'O')
-		<< "   À¯¸® " << (wastes[3] == 0 ? 'X' : 'O')
-		<< "   Á¾ÀÌ " << (wastes[4] == 0 ? 'X' : 'O') << "\n";
+	output << "ì‹ ê³  ì¢Œí‘œ : (" << coordinates.first << ", " << coordinates.second << ")\n";
+	output << "í¬í•¨ ì“°ë ˆê¸° ì¢…ë¥˜ ìˆ˜ : " << waste_cnt << "\n";
+	output << "ì¼ë°˜ " << (wastes[0] == 0 ? 'X' : 'O')
+		<< "   í”Œë¼ìŠ¤í‹± " << (wastes[1] == 0 ? 'X' : 'O')
+		<< "   ìº” " << (wastes[2] == 0 ? 'X' : 'O')
+		<< "   ìœ ë¦¬ " << (wastes[3] == 0 ? 'X' : 'O')
+		<< "   ì¢…ì´ " << (wastes[4] == 0 ? 'X' : 'O') << "\n";
 }
 
 /* class compl_system */
 
-// µÎ ¹Î¿øÀÌ ¼­·Î °°ÀºÁö È®ÀÎ
+// ë‘ ë¯¼ì›ì´ ì„œë¡œ ê°™ì€ì§€ í™•ì¸
 bool compl_system::is_same(complain& a, complain& b) {
 	if (a.get_id() == b.get_id())
 		return true;
 	return false;
 }
 
-// Æ¯Á¤ ºĞ·ùÀÇ ¾²·¹±â ¹Î¿øÀÌ ÃæºĞÈ÷ ¸¹¾Æ Ã³¸®ÇØµµ µÉ¸¸ÇÑÁö È®ÀÎ
+// íŠ¹ì • ë¶„ë¥˜ì˜ ì“°ë ˆê¸° ë¯¼ì›ì´ ì¶©ë¶„íˆ ë§ì•„ ì²˜ë¦¬í•´ë„ ë ë§Œí•œì§€ í™•ì¸
 bool compl_system::is_enough(int waste_code) {
 	if (accumed_compls_list[waste_code].size() >= thresh)
 		return true;
 	return false;
 }
 
-// »çÁø ÀÌ¸§¼ø ¸ğµç ¹Î¿ø Á¶È¸
+// ì‚¬ì§„ ì´ë¦„ìˆœ ëª¨ë“  ë¯¼ì› ì¡°íšŒ
 void compl_system::view_all(multimap<string, complain>& mc) {
-	output << "\n»çÁø ÀÌ¸§¼øÀ¸·Î ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù.\n";
+	output << "\nì‚¬ì§„ ì´ë¦„ìˆœìœ¼ë¡œ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤.\n";
 
 	char ans = 'Y';
 	auto iter = mc.begin();
 	int total = 1;
 	size_t mc_len = mc.size();
 
-	output << "ÃÑ ¹Î¿ø ¼ö : " << mc_len << "\n\n";
+	output << "ì´ ë¯¼ì› ìˆ˜ : " << mc_len << "\n\n";
 
 	while (iter != mc.end() && ans != 'N') {
 		int cnt = 1;
@@ -360,20 +358,20 @@ void compl_system::view_all(multimap<string, complain>& mc) {
 		}
 
 		if (mc_len >= total) {
-			output << "³²Àº ¹Î¿ø " << int(mc_len) - total << "°³\n";
-			output << "´õ º¸±â Y / N\n";
+			output << "ë‚¨ì€ ë¯¼ì› " << int(mc_len) - total << "ê°œ\n";
+			output << "ë” ë³´ê¸° Y / N\n";
 			input >> ans;
 		}
 		else {
-			output << "³²Àº ¹Î¿ø 0°³\n";
-			output << "¸ğµç ¹Î¿øÀ» Á¶È¸ÇÏ¿´½À´Ï´Ù. ";
+			output << "ë‚¨ì€ ë¯¼ì› 0ê°œ\n";
+			output << "ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•˜ì˜€ìŠµë‹ˆë‹¤. ";
 			break;
 		}
 	}
 
-	output << "Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+	output << "ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 }
-// À§µµ, °æµµ¼ø ¸ğµç ¹Î¿ø Á¶È¸
+// ìœ„ë„, ê²½ë„ìˆœ ëª¨ë“  ë¯¼ì› ì¡°íšŒ
 void compl_system::view_all(multimap<double, complain> ml, int code) {
 	char ans = 'Y';
 	auto iter = ml.begin();
@@ -381,17 +379,17 @@ void compl_system::view_all(multimap<double, complain> ml, int code) {
 	size_t ml_len = ml.size();
 
 	if (code == 1) {
-		output << "\nÀ§µµ¼øÀ¸·Î ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù.\n";
+		output << "\nìœ„ë„ìˆœìœ¼ë¡œ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤.\n";
 	}
 	else if (code == 2) {
-		output << "\n°æµµ¼øÀ¸·Î ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù.\n";
+		output << "\nê²½ë„ìˆœìœ¼ë¡œ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤.\n";
 	}
 	else {
-		output << "°æµµ/À§µµ¼ø Á¤·ÄÀ» È£ÃâÇßÁö¸¸ ÄÚµå°¡ Àß¸øµÇ¾ú½À´Ï´Ù. Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+		output << "ê²½ë„/ìœ„ë„ìˆœ ì •ë ¬ì„ í˜¸ì¶œí–ˆì§€ë§Œ ì½”ë“œê°€ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤. ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 		return;
 	}
 
-	output << "ÃÑ ¹Î¿ø ¼ö : " << ml_len << "\n\n";
+	output << "ì´ ë¯¼ì› ìˆ˜ : " << ml_len << "\n\n";
 
 	while (iter != ml.end() && ans != 'N') {
 		int cnt = 1;
@@ -401,29 +399,29 @@ void compl_system::view_all(multimap<double, complain> ml, int code) {
 		}
 
 		if (ml_len >= total) {
-			output << "³²Àº ¹Î¿ø " << int(ml_len) - total << "°³\n";
-			output << "´õ º¸±â Y / N\n";
+			output << "ë‚¨ì€ ë¯¼ì› " << int(ml_len) - total << "ê°œ\n";
+			output << "ë” ë³´ê¸° Y / N\n";
 			input >> ans;
 		}
 		else {
-			output << "³²Àº ¹Î¿ø 0°³\n";
-			output << "¸ğµç ¹Î¿øÀ» Á¶È¸ÇÏ¿´½À´Ï´Ù. ";
+			output << "ë‚¨ì€ ë¯¼ì› 0ê°œ\n";
+			output << "ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•˜ì˜€ìŠµë‹ˆë‹¤. ";
 			break;
 		}
 	}
 
-	output << "Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+	output << "ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 }
-// ¹Î¿ø ³¯Â¥ ¿À¸§Â÷¼ø Á¶È¸
+// ë¯¼ì› ë‚ ì§œ ì˜¤ë¦„ì°¨ìˆœ ì¡°íšŒ
 void compl_system::view_all(multimap<time_t, complain, greater<time_t>> mcf) {
-	output << "\n¹Î¿ø ³¯Â¥ ¿À¸§Â÷¼øÀ¸·Î ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù.\n";
+	output << "\në¯¼ì› ë‚ ì§œ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤.\n";
 
 	char ans = 'Y';
 	auto iter = mcf.begin();
 	int total = 1;
 	size_t mcf_len = mcf.size();
 
-	output << "ÃÑ ¹Î¿ø ¼ö : " << mcf_len << "\n\n";
+	output << "ì´ ë¯¼ì› ìˆ˜ : " << mcf_len << "\n\n";
 
 	while (iter != mcf.end() && ans != 'N') {
 		int cnt = 1;
@@ -433,29 +431,29 @@ void compl_system::view_all(multimap<time_t, complain, greater<time_t>> mcf) {
 		}
 
 		if (mcf_len >= total) {
-			output << "³²Àº ¹Î¿ø " << int(mcf_len) - total << "°³\n";
-			output << "´õ º¸±â Y / N\n";
+			output << "ë‚¨ì€ ë¯¼ì› " << int(mcf_len) - total << "ê°œ\n";
+			output << "ë” ë³´ê¸° Y / N\n";
 			input >> ans;
 		}
 		else {
-			output << "³²Àº ¹Î¿ø 0°³\n";
-			output << "¸ğµç ¹Î¿øÀ» Á¶È¸ÇÏ¿´½À´Ï´Ù. ";
+			output << "ë‚¨ì€ ë¯¼ì› 0ê°œ\n";
+			output << "ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•˜ì˜€ìŠµë‹ˆë‹¤. ";
 			break;
 		}
 	}
 
-	output << "Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+	output << "ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 }
-// ¹Î¿ø ³¯Â¥ ³»¸²Â÷¼ø Á¶È¸
+// ë¯¼ì› ë‚ ì§œ ë‚´ë¦¼ì°¨ìˆœ ì¡°íšŒ
 void compl_system::view_all(multimap<time_t, complain> mcb) {
-	output << "\n¹Î¿ø ³¯Â¥ ³»¸²Â÷¼øÀ¸·Î ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù.\n";
+	output << "\në¯¼ì› ë‚ ì§œ ë‚´ë¦¼ì°¨ìˆœìœ¼ë¡œ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤.\n";
 
 	char ans = 'Y';
 	auto iter = mcb.begin();
 	int total = 1;
 	size_t mcb_len = mcb.size();
 
-	output << "ÃÑ ¹Î¿ø ¼ö : " << mcb_len << "\n\n";
+	output << "ì´ ë¯¼ì› ìˆ˜ : " << mcb_len << "\n\n";
 
 	while (iter != mcb.end() && ans != 'N') {
 		int cnt = 1;
@@ -465,34 +463,34 @@ void compl_system::view_all(multimap<time_t, complain> mcb) {
 		}
 
 		if (mcb_len >= total) {
-			output << "³²Àº ¹Î¿ø " << int(mcb_len) - total << "°³\n";
-			output << "´õ º¸±â Y / N\n";
+			output << "ë‚¨ì€ ë¯¼ì› " << int(mcb_len) - total << "ê°œ\n";
+			output << "ë” ë³´ê¸° Y / N\n";
 			input >> ans;
 		}
 		else {
-			output << "³²Àº ¹Î¿ø 0°³\n";
-			output << "¸ğµç ¹Î¿øÀ» Á¶È¸ÇÏ¿´½À´Ï´Ù. ";
+			output << "ë‚¨ì€ ë¯¼ì› 0ê°œ\n";
+			output << "ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•˜ì˜€ìŠµë‹ˆë‹¤. ";
 			break;
 		}
 	}
 
-	output << "Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+	output << "ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 }
 
-// ´©Àû ¹Î¿ø Ã³¸®
+// ëˆ„ì  ë¯¼ì› ì²˜ë¦¬
 void compl_system::clear_compls(int waste_code) {
-	output << "\nÃ³¸® ¿äÃ» ¾²·¹±â ÄÚµå : " << waste_code << "\n";
+	output << "\nì²˜ë¦¬ ìš”ì²­ ì“°ë ˆê¸° ì½”ë“œ : " << waste_code << "\n";
 	if (!is_enough(waste_code)) {
-		output << "´©ÀûµÈ ¹Î¿øÀÇ ¼ö°¡ ÃÖ¼Ò Ã³¸® ´ÜÀ§º¸´Ù Àû½À´Ï´Ù. ±×·¡µµ Ã³¸®ÇÏ½Ã°Ú½À´Ï±î? Y / N\n";
+		output << "ëˆ„ì ëœ ë¯¼ì›ì˜ ìˆ˜ê°€ ìµœì†Œ ì²˜ë¦¬ ë‹¨ìœ„ë³´ë‹¤ ì ìŠµë‹ˆë‹¤. ê·¸ë˜ë„ ì²˜ë¦¬í•˜ì‹œê² ìŠµë‹ˆê¹Œ? Y / N\n";
 		char ans;
 		input >> ans;
 		if (ans == 'N') {
-			output << "¹Î¿øÀ» Ã³¸®ÇÏÁö ¾Ê½À´Ï´Ù. Ã³¸® ¿äÃ»À» Á¾·áÇÕ´Ï´Ù.\n";
+			output << "ë¯¼ì›ì„ ì²˜ë¦¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ì²˜ë¦¬ ìš”ì²­ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 			return;
 		}
 	}
 
-	output << "Ã³¸®¸¦ ½ÃÀÛÇÕ´Ï´Ù...\n";
+	output << "ì²˜ë¦¬ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤...\n";
 
 	call_drone(accumed_compls_list[waste_code]);
 	accumed_compls_list[waste_code].clear();
@@ -505,7 +503,7 @@ void compl_system::clear_compls(int waste_code) {
 			updated = true;
 		}
 
-		// ¿¬°ü ÄÁÅ×ÀÌ³Ê ¹İº¹ÀÚ ÀÌ¿ëÇØ »èÁ¦ÇÒ ¶§ ÁÖÀÇ : https://wordbe.tistory.com/entry/STL-erase
+		// ì—°ê´€ ì»¨í…Œì´ë„ˆ ë°˜ë³µì ì´ìš©í•´ ì‚­ì œí•  ë•Œ ì£¼ì˜ : https://wordbe.tistory.com/entry/STL-erase
 		auto mc = map_comp.find(e.get_name());
 		for (mc; mc != map_comp.end();) {
 			if (compl_system::is_same(e, mc->second)) {
@@ -583,15 +581,15 @@ void compl_system::clear_compls(int waste_code) {
 		}
 	}
 
-	// Âü°í : https://cho001.tistory.com/164
+	// ì°¸ê³  : https://cho001.tistory.com/164
 	all_compls.erase(remove_if(all_compls.begin(), all_compls.end(), ::is_wcnt_zero), all_compls.end());
 
-	output << "Ã³¸®°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.\n";
+	output << "ì²˜ë¦¬ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.\n";
 
 	return;
 }
 
-// ´©Àû ¹Î¿ø ¹°¸®Àû Ã³¸®
+// ëˆ„ì  ë¯¼ì› ë¬¼ë¦¬ì  ì²˜ë¦¬
 void compl_system::call_drone(vector<complain>& c_list) {
 	drone_graph navi{unsigned(c_list.size() + 1)};
 	pair<double, double> station = make_pair(double(area_code.first), double(area_code.second));
@@ -610,26 +608,26 @@ void compl_system::call_drone(vector<complain>& c_list) {
 		}
 	}
 
-	output << "°æ·Î¸¦ ±¸¼ºÇÕ´Ï´Ù...\n";
+	output << "ê²½ë¡œë¥¼ êµ¬ì„±í•©ë‹ˆë‹¤...\n";
 	navi.prim_tree();
 
-	output << "°æ·Î°¡ »ı¼ºµÇ¾ú½À´Ï´Ù.\n";
+	output << "ê²½ë¡œê°€ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.\n";
 	navi.print_mst(c_list);
 
 	navi.fly_dfs_drone(c_list);
 
-	output << "Å½»öµÈ °æ·Î·Î ¼ö°Å µå·ĞÀ» ¿äÃ»ÇÕ´Ï´Ù.\n";
+	output << "íƒìƒ‰ëœ ê²½ë¡œë¡œ ìˆ˜ê±° ë“œë¡ ì„ ìš”ì²­í•©ë‹ˆë‹¤.\n";
 	return;
 }
 
-compl_system::compl_system() { // ±âº» »ı¼ºÀÚ
+compl_system::compl_system() { // ê¸°ë³¸ ìƒì„±ì
 	latest_id = 1;
 	area_code = make_pair(NULL, NULL);
 	thresh = 20;
 	accumed_compls_list.resize(5);
 	file_checkpoint = 0;
 }
-compl_system::compl_system(int x, int y) { // »ı¼ºÀÚ
+compl_system::compl_system(int x, int y) { // ìƒì„±ì
 	latest_id = 1;
 	area_code = make_pair(x, y);
 	thresh = 20;
@@ -637,110 +635,110 @@ compl_system::compl_system(int x, int y) { // »ı¼ºÀÚ
 	file_checkpoint = 0;
 }
 
-// ½Ã½ºÅÛ ½ÃÀÛ : »ç¿ëÀÚ¿¡°Ô Áö¿ª ÄÚµå¸¦ ÀÔ·Â¹Ş°í ±âÁ¸ µ¥ÀÌÅÍ À¯¹« È®ÀÎ, »õ ·Î±× »ı¼º µî
+// ì‹œìŠ¤í…œ ì‹œì‘ : ì‚¬ìš©ìì—ê²Œ ì§€ì—­ ì½”ë“œë¥¼ ì…ë ¥ë°›ê³  ê¸°ì¡´ ë°ì´í„° ìœ ë¬´ í™•ì¸, ìƒˆ ë¡œê·¸ ìƒì„± ë“±
 void compl_system::system_on() {
 	pair<int, int> acode;
 	string file_route;
 	bool is_file_valuable;
 	char is_load_save;
 
-	output << "\nÇÏÃµ ¾²·¹±â ¹Î¿ø Ã³¸® ½Ã½ºÅÛÀ» ½ÃÀÛÇÕ´Ï´Ù. °üÇÒ ±¸¿ªÀÇ À§µµ¿Í °æµµ Á¤¼ö ºÎºĞÀ» °ø¹éÀ¸·Î ±¸ºĞÇÏ¿© ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+	output << "\ní•˜ì²œ ì“°ë ˆê¸° ë¯¼ì› ì²˜ë¦¬ ì‹œìŠ¤í…œì„ ì‹œì‘í•©ë‹ˆë‹¤. ê´€í•  êµ¬ì—­ì˜ ìœ„ë„ì™€ ê²½ë„ ì •ìˆ˜ ë¶€ë¶„ì„ ê³µë°±ìœ¼ë¡œ êµ¬ë¶„í•˜ì—¬ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 	input >> acode.first >> acode.second;
-	output << "ÀÔ·ÂµÈ ÄÚµå´Â (" << acode.first << ", " << acode.second << ")ÀÔ´Ï´Ù.\n";
+	output << "ì…ë ¥ëœ ì½”ë“œëŠ” (" << acode.first << ", " << acode.second << ")ì…ë‹ˆë‹¤.\n";
 
 	this->area_code = acode;
 	file_route = "res/" + to_string(acode.first) + "_" + to_string(acode.second) + ".csv";
 	is_file_valuable = _access(file_route.c_str(), 0) != -1;
 
-	if (is_file_valuable) { // ÆÄÀÏ Á¸Àç È®ÀÎ Âü°í : https://tw0226.tistory.com/121
-		// ±âÁ¸ µ¥ÀÌÅÍ ÆÄÀÏ Á¸ÀçÇÔ
-		output << "±âÁ¸ µ¥ÀÌÅÍ°¡ Á¸ÀçÇÕ´Ï´Ù. ºÒ·¯¿À½Ã°Ú½À´Ï±î? Y / N\n";
+	if (is_file_valuable) { // íŒŒì¼ ì¡´ì¬ í™•ì¸ ì°¸ê³  : https://tw0226.tistory.com/121
+		// ê¸°ì¡´ ë°ì´í„° íŒŒì¼ ì¡´ì¬í•¨
+		output << "ê¸°ì¡´ ë°ì´í„°ê°€ ì¡´ì¬í•©ë‹ˆë‹¤. ë¶ˆëŸ¬ì˜¤ì‹œê² ìŠµë‹ˆê¹Œ? Y / N\n";
 		input >> is_load_save;
-		output << "ÀÔ·ÂµÈ °ªÀº " << is_load_save << "ÀÔ´Ï´Ù.\n";
+		output << "ì…ë ¥ëœ ê°’ì€ " << is_load_save << "ì…ë‹ˆë‹¤.\n";
 
-		if (is_load_save == 'N') { // ±âÁ¸ µ¥ÀÌÅÍ ºÒ·¯¿ÀÁö ¾Ê±â
-			output << "°è¼ÓÇÏ±â¸¦ ¼±ÅÃÇÏ¸é ±âÁ¸ÀÇ µ¥ÀÌÅÍ°¡ ¸ğµÎ ¼Ò½ÇµË´Ï´Ù. °è¼ÓÇÏ½Ã°Ú½À´Ï±î? Y / N\n";
+		if (is_load_save == 'N') { // ê¸°ì¡´ ë°ì´í„° ë¶ˆëŸ¬ì˜¤ì§€ ì•Šê¸°
+			output << "ê³„ì†í•˜ê¸°ë¥¼ ì„ íƒí•˜ë©´ ê¸°ì¡´ì˜ ë°ì´í„°ê°€ ëª¨ë‘ ì†Œì‹¤ë©ë‹ˆë‹¤. ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ? Y / N\n";
 			input >> is_load_save;
-			output << "ÀÔ·ÂµÈ °ªÀº " << is_load_save << "ÀÔ´Ï´Ù.\n";
+			output << "ì…ë ¥ëœ ê°’ì€ " << is_load_save << "ì…ë‹ˆë‹¤.\n";
 
 			switch (is_load_save) {
-			case 'Y': // ±âÁ¸ µ¥ÀÌÅÍ ¹«½ÃÇÏ°í »õ µ¥ÀÌÅÍ »ı¼º ÁøÇà
+			case 'Y': // ê¸°ì¡´ ë°ì´í„° ë¬´ì‹œí•˜ê³  ìƒˆ ë°ì´í„° ìƒì„± ì§„í–‰
 				is_load_save = 'N';
 				break;
-			case 'N': // ±âÁ¸ µ¥ÀÌÅÍ »ç¿ëÇÏ±â·Î ÇÔ
+			case 'N': // ê¸°ì¡´ ë°ì´í„° ì‚¬ìš©í•˜ê¸°ë¡œ í•¨
 				is_load_save = 'Y';
 				break;
-			default: // ÀÌ»óÇÑ ´ë´ä ÇÏ¸é ³ªµµ ¾È ÇØ ´øÁ®
-				error(_error::shut_down, "Àß¸øµÈ ÀÔ·Â: 'Y' ¶Ç´Â 'N'¸¸ ÀÔ·ÂÇÒ ¼ö ÀÖ½À´Ï´Ù.");
+			default: // ì´ìƒí•œ ëŒ€ë‹µ í•˜ë©´ ë‚˜ë„ ì•ˆ í•´ ë˜ì ¸
+				error(_error::shut_down, "ì˜ëª»ëœ ì…ë ¥: 'Y' ë˜ëŠ” 'N'ë§Œ ì…ë ¥í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
 			}
 		}
 
-		if (is_load_save == 'Y') { // ±âÁ¸ µ¥ÀÌÅÍ ºÒ·¯¿À±â
+		if (is_load_save == 'Y') { // ê¸°ì¡´ ë°ì´í„° ë¶ˆëŸ¬ì˜¤ê¸°
 			this->load_save();
 		}
 	}
-	else if (!is_file_valuable) { // ±âÁ¸ µ¥ÀÌÅÍ ÆÄÀÏ Á¸ÀçÇÏÁö ¾ÊÀ½
-		// »õ ¼¼ÀÌºê ÆÄÀÏ ¸¸µé°í ¸Ş¼Òµå Á¾·á
-		// Âü°í : https://homzzang.com/b/cpp-34
+	else if (!is_file_valuable) { // ê¸°ì¡´ ë°ì´í„° íŒŒì¼ ì¡´ì¬í•˜ì§€ ì•ŠìŒ
+		// ìƒˆ ì„¸ì´ë¸Œ íŒŒì¼ ë§Œë“¤ê³  ë©”ì†Œë“œ ì¢…ë£Œ
+		// ì°¸ê³  : https://homzzang.com/b/cpp-34
 		ofstream new_save(file_route);
 		new_save.close();
 		return;
 	}
 
 	if (is_file_valuable && is_load_save == 'N') {
-		// ±âÁ¸ µ¥ÀÌÅÍ ÆÄÀÏ Á¸ÀçÇÏÁö¸¸ »ç¿ëÀÚ°¡ ±âÁ¸ÀÇ µ¥ÀÌÅÍ¸¦ ºÒ·¯¿ÀÁö ¾Ê±â·Î ÇßÀ½
-		// ¼¼ÀÌºê ÆÄÀÏÀº ÀÖÀ¸³ª ·ÎµåÇÒ ¼¼ÀÌºê°¡ ¾øÀ¸¹Ç·Î ¸Ş¼Òµå Á¾·á.
+		// ê¸°ì¡´ ë°ì´í„° íŒŒì¼ ì¡´ì¬í•˜ì§€ë§Œ ì‚¬ìš©ìê°€ ê¸°ì¡´ì˜ ë°ì´í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ì•Šê¸°ë¡œ í–ˆìŒ
+		// ì„¸ì´ë¸Œ íŒŒì¼ì€ ìˆìœ¼ë‚˜ ë¡œë“œí•  ì„¸ì´ë¸Œê°€ ì—†ìœ¼ë¯€ë¡œ ë©”ì†Œë“œ ì¢…ë£Œ.
 		return;
 	}
 }
 
-// ¹Î¿ø Á¢¼ö
+// ë¯¼ì› ì ‘ìˆ˜
 void compl_system::receive_compl() {
 	complain new_comp;
 	unsigned c_id;
 	string word;
-	string pn; // »çÁø ÀÌ¸§(ÇÊ¿ä½Ã Àı´ë/»ó´ë ÆÄÀÏ °æ·Î Æ÷ÇÔ, »çÁø Å©±â¸¦ ºñ·ÔÇØ »çÁø ÆÄÀÏ ÀÚÃ¼¿¡ ´ëÇÑ °¢Á¾ Á¤º¸´Â ¿øº» ÆÄÀÏÀÇ Á¤º¸¿¡ Æ÷ÇÔµÈ´Ù°í º»´Ù)
-	int cdate; // ¹Î¿ø ½Å°í ³¯Â¥
-	double x, y; // »çÁø ÁÂÇ¥
-	int wcnt; // Æ÷ÇÔµÈ ¾²·¹±âÀÇ Á¾·ù ¼ö
+	string pn; // ì‚¬ì§„ ì´ë¦„(í•„ìš”ì‹œ ì ˆëŒ€/ìƒëŒ€ íŒŒì¼ ê²½ë¡œ í¬í•¨, ì‚¬ì§„ í¬ê¸°ë¥¼ ë¹„ë¡¯í•´ ì‚¬ì§„ íŒŒì¼ ìì²´ì— ëŒ€í•œ ê°ì¢… ì •ë³´ëŠ” ì›ë³¸ íŒŒì¼ì˜ ì •ë³´ì— í¬í•¨ëœë‹¤ê³  ë³¸ë‹¤)
+	int cdate; // ë¯¼ì› ì‹ ê³  ë‚ ì§œ
+	double x, y; // ì‚¬ì§„ ì¢Œí‘œ
+	int wcnt; // í¬í•¨ëœ ì“°ë ˆê¸°ì˜ ì¢…ë¥˜ ìˆ˜
 	string ws;
 	char ans = 'N';
 	string waiting_file_route = "res/waiting list.csv";
 
 	while (ans != 'Y') {
-		output << "\n»õ ¹Î¿øÀ» ÀÔ·ÂÇÕ´Ï´Ù. ¹Î¿ø¸í(ÆÄÀÏ¸í)À» ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+		output << "\nìƒˆ ë¯¼ì›ì„ ì…ë ¥í•©ë‹ˆë‹¤. ë¯¼ì›ëª…(íŒŒì¼ëª…)ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 		input >> pn;
 
-		output << "¹Î¿ø ½Å°í ³¯Â¥¸¦ 8ÀÚ¸® ¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+		output << "ë¯¼ì› ì‹ ê³  ë‚ ì§œë¥¼ 8ìë¦¬ ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 		input >> word;
 		cdate = stoi(word);
 
-		output << "½Å°í À§Ä¡(À§µµ, °æµµ)¸¦ °ø¹éÀ¸·Î ±¸ºĞÇÏ¿© ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+		output << "ì‹ ê³  ìœ„ì¹˜(ìœ„ë„, ê²½ë„)ë¥¼ ê³µë°±ìœ¼ë¡œ êµ¬ë¶„í•˜ì—¬ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 		input >> word;
 		x = stod(word);
 		input >> word;
 		y = stod(word);
 
-		output << "½Å°íÇÒ ¾²·¹±âÀÇ Á¾·ù ¼ö¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+		output << "ì‹ ê³ í•  ì“°ë ˆê¸°ì˜ ì¢…ë¥˜ ìˆ˜ë¥¼ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 		input >> word;
 		wcnt = stoi(word);
 
-		output << "ºĞ·ùº° ¾²·¹±â Æ÷ÇÔ ¿©ºÎ¸¦ °ø¹é ¾øÀÌ ´Ù¼¸ ÀÚ¸® ¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n";
+		output << "ë¶„ë¥˜ë³„ ì“°ë ˆê¸° í¬í•¨ ì—¬ë¶€ë¥¼ ê³µë°± ì—†ì´ ë‹¤ì„¯ ìë¦¬ ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n";
 		input >> ws;
 
 		new_comp = complain(latest_id, pn, cdate, x, y, wcnt, ws);
 
-		output << "¹Î¿ø Á¤º¸ ÀÔ·ÂÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù. ÀÔ·ÂÇÑ Á¤º¸¸¦ ´Ù½Ã È®ÀÎÇØ ÁÖ¼¼¿ä.\n\n";
+		output << "ë¯¼ì› ì •ë³´ ì…ë ¥ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ì…ë ¥í•œ ì •ë³´ë¥¼ ë‹¤ì‹œ í™•ì¸í•´ ì£¼ì„¸ìš”.\n\n";
 		new_comp.print();
 
-		output << "ÀÌ Á¤º¸·Î °è¼ÓÇÏ½Ã°Ú½À´Ï±î? Y / N\n";
+		output << "ì´ ì •ë³´ë¡œ ê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ? Y / N\n";
 		input >> ans;
 	}
 
 	if (int(x) != this->area_code.first || int(y) != this->area_code.second) {
-		output << "ÇØ´ç ¹Î¿øÀº °üÇÒ ±¸¿ª¿¡ À§Ä¡ÇÏÁö ¾Ê½À´Ï´Ù. ½ÂÀÎ ´ë±â ¸ñ·Ï¿¡ Ãß°¡ÇÕ´Ï´Ù.\n";
+		output << "í•´ë‹¹ ë¯¼ì›ì€ ê´€í•  êµ¬ì—­ì— ìœ„ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ìŠ¹ì¸ ëŒ€ê¸° ëª©ë¡ì— ì¶”ê°€í•©ë‹ˆë‹¤.\n";
 
-		// Âü°í : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
+		// ì°¸ê³  : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
 		fstream file;
 		file.open(waiting_file_route, ios::app);
 		// ofstream file{ waiting_file_route };
@@ -755,7 +753,7 @@ void compl_system::receive_compl() {
 		return;
 	}
 
-	output << "¹Î¿øÀ» Á¢¼ö ÁßÀÔ´Ï´Ù...\n";
+	output << "ë¯¼ì›ì„ ì ‘ìˆ˜ ì¤‘ì…ë‹ˆë‹¤...\n";
 	latest_id += 1;
 	this->all_compls.push_back(new_comp);
 	this->map_comp.insert(make_pair(new_comp.get_name(), new_comp));
@@ -773,12 +771,12 @@ void compl_system::receive_compl() {
 		}
 	}
 
-	output << "¹Î¿øÀÌ Á¢¼öµÇ¾ú½À´Ï´Ù.\n";
+	output << "ë¯¼ì›ì´ ì ‘ìˆ˜ë˜ì—ˆìŠµë‹ˆë‹¤.\n";
 
 	return;
 }
 
-// ÀÚµ¿ ¹Î¿ø Á¢¼ö
+// ìë™ ë¯¼ì› ì ‘ìˆ˜
 void compl_system::auto_receive_compl(int cnt) {
 	ifstream file_in{ "..\\Prepare data\\processed data\\my_total_data.csv" };
 	string waiting_file_route = "res/waiting list.csv";
@@ -790,11 +788,11 @@ void compl_system::auto_receive_compl(int cnt) {
 	int wastes[5];
 
 	string line;
-	istringstream word; // Âü°í : https://chbuljumeok1997.tistory.com/42
+	istringstream word; // ì°¸ê³  : https://chbuljumeok1997.tistory.com/42
 
-	output << "ÆÄÀÏ·Î ÀÛ¼ºµÈ ¹Î¿øÀ» Á¢¼öÇÕ´Ï´Ù. Á¢¼ö ¹üÀ§´Â " << file_checkpoint + 1 << "¹øÂ°ºÎÅÍ " << cnt << "°³ÀÔ´Ï´Ù.\n";
+	output << "íŒŒì¼ë¡œ ì‘ì„±ëœ ë¯¼ì›ì„ ì ‘ìˆ˜í•©ë‹ˆë‹¤. ì ‘ìˆ˜ ë²”ìœ„ëŠ” " << file_checkpoint + 1 << "ë²ˆì§¸ë¶€í„° " << cnt << "ê°œì…ë‹ˆë‹¤.\n";
 
-	for (int i = 0; i < file_checkpoint; i++) // start ÀÌÀü ºÎºĞÀº ¾Æ¹«°Íµµ ¾È ÇÏ°í ³Ñ±è
+	for (int i = 0; i < file_checkpoint; i++) // start ì´ì „ ë¶€ë¶„ì€ ì•„ë¬´ê²ƒë„ ì•ˆ í•˜ê³  ë„˜ê¹€
 		getline(file_in, line);
 
 	for (int i = 0; i < cnt; i++) {
@@ -806,8 +804,8 @@ void compl_system::auto_receive_compl(int cnt) {
 
 		word = istringstream(line);
 
-		// Âü°í : https://myprivatestudy.tistory.com/48
-		getline(word, line, ','); // Âü°í : https://myprivatestudy.tistory.com/48
+		// ì°¸ê³  : https://myprivatestudy.tistory.com/48
+		getline(word, line, ','); // ì°¸ê³  : https://myprivatestudy.tistory.com/48
 		pic_name = line;
 
 		getline(word, line, ',');
@@ -832,9 +830,9 @@ void compl_system::auto_receive_compl(int cnt) {
 		cp.print();
 
 		if (int(coordinates.first) != this->area_code.first || int(coordinates.second) != this->area_code.second) {
-			output << "ÀÌ ¹Î¿øÀº °üÇÒ ±¸¿ª¿¡ À§Ä¡ÇÏÁö ¾Ê½À´Ï´Ù. ½ÂÀÎ ´ë±â ¸ñ·Ï¿¡ Ãß°¡ÇÕ´Ï´Ù.\n\n";
+			output << "ì´ ë¯¼ì›ì€ ê´€í•  êµ¬ì—­ì— ìœ„ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ìŠ¹ì¸ ëŒ€ê¸° ëª©ë¡ì— ì¶”ê°€í•©ë‹ˆë‹¤.\n\n";
 
-			// Âü°í : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
+			// ì°¸ê³  : https://blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sea5727&logNo=220978963342
 			fstream file;
 			file.open(waiting_file_route, ios::app);
 
@@ -870,41 +868,41 @@ void compl_system::auto_receive_compl(int cnt) {
 
 	file_checkpoint += cnt;
 
-	output << "Á¢¼ö¸¦ ¿Ï·áÇß½À´Ï´Ù.\n";
+	output << "ì ‘ìˆ˜ë¥¼ ì™„ë£Œí–ˆìŠµë‹ˆë‹¤.\n";
 
 	return;
 }
 
-// Á¤·Ä ±âÁØ(sort_by)¿¡ µû¸¥ ÀüÃ¼ ¹Î¿ø Á¶È¸(Ãâ·ÂÇÏ°Ô ÇÒ °ÍÀÌ¹Ç·Î ¹İÈ¯°ª ¾øÀ½)
+// ì •ë ¬ ê¸°ì¤€(sort_by)ì— ë”°ë¥¸ ì „ì²´ ë¯¼ì› ì¡°íšŒ(ì¶œë ¥í•˜ê²Œ í•  ê²ƒì´ë¯€ë¡œ ë°˜í™˜ê°’ ì—†ìŒ)
 void compl_system::view_all() {
-	// °¡´ÉÇÑ Á¤·Ä ±âÁØ : »çÁø ÀÌ¸§ ¿À¸§Â÷¼ø, À§µµ ¿À¸§Â÷¼ø, °æµµ ¿À¸§Â÷¼ø, Á¢¼ö ³¯Â¥ ¿À¸§Â÷¼ø/³»¸²Â÷¼ø
-	// ¸Ê »ç¿ë
+	// ê°€ëŠ¥í•œ ì •ë ¬ ê¸°ì¤€ : ì‚¬ì§„ ì´ë¦„ ì˜¤ë¦„ì°¨ìˆœ, ìœ„ë„ ì˜¤ë¦„ì°¨ìˆœ, ê²½ë„ ì˜¤ë¦„ì°¨ìˆœ, ì ‘ìˆ˜ ë‚ ì§œ ì˜¤ë¦„ì°¨ìˆœ/ë‚´ë¦¼ì°¨ìˆœ
+	// ë§µ ì‚¬ìš©
 	int ans;
-	output << "\nÁ¢¼öµÈ ¸ğµç ¹Î¿øÀ» Á¶È¸ÇÕ´Ï´Ù. Á¤·Ä ±âÁØÀ» ¼ıÀÚ·Î ¼±ÅÃÇØ ÁÖ¼¼¿ä.\n1. »çÁø ÀÌ¸§\n2. À§µµ\n3. °æµµ\n4. Á¢¼ö ÀÏÀÚ ¿À¸§Â÷¼ø\n5. Á¢¼ö ÀÏÀÚ ³»¸²Â÷¼ø\n";
+	output << "\nì ‘ìˆ˜ëœ ëª¨ë“  ë¯¼ì›ì„ ì¡°íšŒí•©ë‹ˆë‹¤. ì •ë ¬ ê¸°ì¤€ì„ ìˆ«ìë¡œ ì„ íƒí•´ ì£¼ì„¸ìš”.\n1. ì‚¬ì§„ ì´ë¦„\n2. ìœ„ë„\n3. ê²½ë„\n4. ì ‘ìˆ˜ ì¼ì ì˜¤ë¦„ì°¨ìˆœ\n5. ì ‘ìˆ˜ ì¼ì ë‚´ë¦¼ì°¨ìˆœ\n";
 	input >> ans;
 
 	switch (ans) {
-	case 1: output << "¼±ÅÃÇÑ °ªÀº '1. »çÁø ÀÌ¸§'ÀÔ´Ï´Ù.\n"; view_all(map_comp); break;
-	case 2: output << "¼±ÅÃÇÑ °ªÀº '2. À§µµ'ÀÔ´Ï´Ù.\n"; view_all(map_latitude, 1); break;
-	case 3: output << "¼±ÅÃÇÑ °ªÀº '3. °æµµ'ÀÔ´Ï´Ù.\n"; view_all(map_longitude, 2); break;
-	case 4: output << "¼±ÅÃÇÑ °ªÀº '4. Á¢¼ö ÀÏÀÚ ¿À¸§Â÷¼ø'ÀÔ´Ï´Ù.\n"; view_all(map_cdate_front); break;
-	case 5: output << "¼±ÅÃÇÑ °ªÀº '5. Á¢¼ö ÀÏÀÚ ³»¸²Â÷¼ø'ÀÔ´Ï´Ù.\n"; view_all(map_cdate_back); break;
-	default: output << "Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. Á¶È¸¸¦ Á¾·áÇÕ´Ï´Ù.\n";
+	case 1: output << "ì„ íƒí•œ ê°’ì€ '1. ì‚¬ì§„ ì´ë¦„'ì…ë‹ˆë‹¤.\n"; view_all(map_comp); break;
+	case 2: output << "ì„ íƒí•œ ê°’ì€ '2. ìœ„ë„'ì…ë‹ˆë‹¤.\n"; view_all(map_latitude, 1); break;
+	case 3: output << "ì„ íƒí•œ ê°’ì€ '3. ê²½ë„'ì…ë‹ˆë‹¤.\n"; view_all(map_longitude, 2); break;
+	case 4: output << "ì„ íƒí•œ ê°’ì€ '4. ì ‘ìˆ˜ ì¼ì ì˜¤ë¦„ì°¨ìˆœ'ì…ë‹ˆë‹¤.\n"; view_all(map_cdate_front); break;
+	case 5: output << "ì„ íƒí•œ ê°’ì€ '5. ì ‘ìˆ˜ ì¼ì ë‚´ë¦¼ì°¨ìˆœ'ì…ë‹ˆë‹¤.\n"; view_all(map_cdate_back); break;
+	default: output << "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ì¡°íšŒë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\n";
 	}
 
 	return;
 }
 
-// Æ¯Á¤ ºĞ·ùÀÇ ¾²·¹±â °ü·Ã ¹Î¿ø ÀÏ°ı Ã³¸® : Ã³¸® ÈÄ ÀüÃ¼ ¹Î¿ø º¤ÅÍ³ª ´Ù¸¥ ¸Ê µî¿¡¼­ NULLÀ» Á¦°ÅÇÏ´Â °úÁ¤ÀÌ ÇÊ¿äÇÔ
+// íŠ¹ì • ë¶„ë¥˜ì˜ ì“°ë ˆê¸° ê´€ë ¨ ë¯¼ì› ì¼ê´„ ì²˜ë¦¬ : ì²˜ë¦¬ í›„ ì „ì²´ ë¯¼ì› ë²¡í„°ë‚˜ ë‹¤ë¥¸ ë§µ ë“±ì—ì„œ NULLì„ ì œê±°í•˜ëŠ” ê³¼ì •ì´ í•„ìš”í•¨
 void compl_system::clear_compls() {
-	output << "\n´©Àû ¹Î¿ø Ã³¸®¸¦ ¿äÃ»ÇÕ´Ï´Ù. Ã³¸®ÇÒ ¾²·¹±â ÄÚµå¸¦ ¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä.\n0. ÀÏ¹İ\n1. ÇÃ¶ó½ºÆ½\n2. Äµ\n3. À¯¸®\n4. Á¾ÀÌ\n";
+	output << "\nëˆ„ì  ë¯¼ì› ì²˜ë¦¬ë¥¼ ìš”ì²­í•©ë‹ˆë‹¤. ì²˜ë¦¬í•  ì“°ë ˆê¸° ì½”ë“œë¥¼ ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”.\n0. ì¼ë°˜\n1. í”Œë¼ìŠ¤í‹±\n2. ìº”\n3. ìœ ë¦¬\n4. ì¢…ì´\n";
 	int code;
 	input >> code;
 	clear_compls(code);
 	return;
 }
 
-// ÆÄÀÏ¿¡ ±â·ÏµÈ µ¥ÀÌÅÍ¸¦ ÅëÇÑ ÀÌÀü ¾÷¹« ±â·Ï ·Îµå. ¸Å¹ø »õ ½Ã½ºÅÛÀ» »ı¼ºÇÒ ¼ö´Â ¾øÀ¸´Ï±î.
+// íŒŒì¼ì— ê¸°ë¡ëœ ë°ì´í„°ë¥¼ í†µí•œ ì´ì „ ì—…ë¬´ ê¸°ë¡ ë¡œë“œ. ë§¤ë²ˆ ìƒˆ ì‹œìŠ¤í…œì„ ìƒì„±í•  ìˆ˜ëŠ” ì—†ìœ¼ë‹ˆê¹Œ.
 void compl_system::load_save() {
 	string file_route = "res/" + to_string(int(area_code.first)) + "_" + to_string(int(area_code.second)) + ".csv";
 	ifstream data_file{ file_route };
@@ -919,7 +917,7 @@ void compl_system::load_save() {
 
 	while (!data_file.eof()) {
 		string line;
-		istringstream word; // Âü°í : https://chbuljumeok1997.tistory.com/42
+		istringstream word; // ì°¸ê³  : https://chbuljumeok1997.tistory.com/42
 
 		getline(data_file, line);
 
@@ -929,8 +927,8 @@ void compl_system::load_save() {
 
 		word = istringstream(line);
 
-		// Âü°í : https://myprivatestudy.tistory.com/48
-		getline(word, line, ','); // Âü°í : https://myprivatestudy.tistory.com/48
+		// ì°¸ê³  : https://myprivatestudy.tistory.com/48
+		getline(word, line, ','); // ì°¸ê³  : https://myprivatestudy.tistory.com/48
 		pic_name = line;
 
 		getline(word, line, ',');
@@ -971,29 +969,29 @@ void compl_system::load_save() {
 	data_file.close();
 }
 
-// ¾÷¹« ÁøÇà »óÈ²À» ÆÄÀÏ·Î ±â·Ï. ¾÷¹«¸¦ Á¾·áÇÏ°Å³ª Áß°£ ÀúÀåÀÌ ÇÊ¿äÇÒ ¶§ ½ÇÇà.
+// ì—…ë¬´ ì§„í–‰ ìƒí™©ì„ íŒŒì¼ë¡œ ê¸°ë¡. ì—…ë¬´ë¥¼ ì¢…ë£Œí•˜ê±°ë‚˜ ì¤‘ê°„ ì €ì¥ì´ í•„ìš”í•  ë•Œ ì‹¤í–‰.
 void compl_system::save_task() {
 	string file_route = "res/" + to_string(int(area_code.first)) + "_" + to_string(int(area_code.second)) + ".csv";
 	ofstream save_file{ file_route };
 
-	// »çÁøÀÌ¸§,³¯Â¥8ÀÚ¸®,À§µµ,°æµµ,¾²·¹±â¼ö,°¢ ¾²·¹±â ¿©ºÎ
+	// ì‚¬ì§„ì´ë¦„,ë‚ ì§œ8ìë¦¬,ìœ„ë„,ê²½ë„,ì“°ë ˆê¸°ìˆ˜,ê° ì“°ë ˆê¸° ì—¬ë¶€
 
-	output << "\n¾÷¹« ±â·ÏÀ» ÀúÀåÇÕ´Ï´Ù...\n";
+	output << "\nì—…ë¬´ ê¸°ë¡ì„ ì €ì¥í•©ë‹ˆë‹¤...\n";
 
 	for (auto i : all_compls) {
-		save_file << i.get_name() << ","; // »çÁø ÀÌ¸§ ÆÄÀÏ¿¡ ÀÔ·Â
+		save_file << i.get_name() << ","; // ì‚¬ì§„ ì´ë¦„ íŒŒì¼ì— ì…ë ¥
 
-		// ¹Î¿ø ³¯Â¥¸¦ 8ÀÚ¸® ¼ıÀÚ·Î º¯È¯
+		// ë¯¼ì› ë‚ ì§œë¥¼ 8ìë¦¬ ìˆ«ìë¡œ ë³€í™˜
 		time_t date = i.get_date();
 		tm date_tm;
 		errno_t err = localtime_s(&date_tm, &date);
 		char date_cstr[128];
 		strftime(date_cstr, sizeof(date_cstr), "%Y%m%d", &date_tm);
 		string date_str = date_cstr;
-		save_file << date_str << ","; // ¹Î¿ø ³¯Â¥ ÆÄÀÏ¿¡ ÀÔ·Â
+		save_file << date_str << ","; // ë¯¼ì› ë‚ ì§œ íŒŒì¼ì— ì…ë ¥
 
-		save_file << i.get_codi().first << "," << i.get_codi().second << ","; // À§µµ, °æµµ ÆÄÀÏ¿¡ ÀÔ·Â
-		save_file << i.get_wcnt() << ","; // ¾²·¹±â ¼ö ÆÄÀÏ¿¡ ÀÔ·Â
+		save_file << i.get_codi().first << "," << i.get_codi().second << ","; // ìœ„ë„, ê²½ë„ íŒŒì¼ì— ì…ë ¥
+		save_file << i.get_wcnt() << ","; // ì“°ë ˆê¸° ìˆ˜ íŒŒì¼ì— ì…ë ¥
 
 		for (int j = 0; j < 5; j++)
 			save_file << i.wastes[j] << (j < 4 ? "," : "\n");
@@ -1001,7 +999,7 @@ void compl_system::save_task() {
 
 	save_file.close();
 
-	output << "¾÷¹« ±â·ÏÀÌ ÀúÀåµÇ¾ú½À´Ï´Ù.\n";
+	output << "ì—…ë¬´ ê¸°ë¡ì´ ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤.\n";
 
 	return;
 }
@@ -1028,14 +1026,14 @@ Edge::Edge(unsigned fid, unsigned tid, pair<double, double> f, pair<double, doub
 
 /* class drone_graph */
 
-// Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
-auto drone_graph::edges_from(unsigned i) const { // Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
+// íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
+auto drone_graph::edges_from(unsigned i) const { // íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
 	vector<Edge> edge_from_i;
 	for (auto& e : edges) {
 		if (e.from_id == i)
 			edge_from_i.push_back(e);
 	}
-	/* // ÀÌÂÊ ÄÚµåµµ ¶È°°Àº ±â´ÉÀ» ÇÔ
+	/* // ì´ìª½ ì½”ë“œë„ ë˜‘ê°™ì€ ê¸°ëŠ¥ì„ í•¨
 	for (int idx = 0; idx < this->edges.size(); idx++) {
 		if (this->edges[idx].from == i)
 			edge_from_i.push_back(edges[idx]);
@@ -1043,7 +1041,7 @@ auto drone_graph::edges_from(unsigned i) const { // Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ 
 	return edge_from_i;
 }
 
-// mst Æ®¸®¿¡¼­ Æ¯Á¤ Á¤Á¡¿¡ ¿¬°áµÈ °£¼±µé¸¸ ¹İÈ¯
+// mst íŠ¸ë¦¬ì—ì„œ íŠ¹ì • ì •ì ì— ì—°ê²°ëœ ê°„ì„ ë“¤ë§Œ ë°˜í™˜
 auto drone_graph::mst_edges_from(unsigned i) const {
 	vector<Edge> edge_from_i;
 	for (int idx = 0; idx < this->mst.size(); idx++) {
@@ -1053,41 +1051,41 @@ auto drone_graph::mst_edges_from(unsigned i) const {
 	return edge_from_i;
 }
 
-// ¹æÇâ °£¼± Ãß°¡
+// ë°©í–¥ ê°„ì„  ì¶”ê°€
 void drone_graph::add(Edge& e) {
 	if (e.from_id >= 0 && e.from_id <= v && e.to_id >= 0 && e.to_id <= v)
 		this->edges.push_back(e);
 	else
-		error(_error::shut_down, "Á¤Á¡ ¹üÀ§ ÃÊ°ú");
+		error(_error::shut_down, "ì •ì  ë²”ìœ„ ì´ˆê³¼");
 
 	return;
 }
 
-// ¹«¹æÇâ °£¼± Ãß°¡
+// ë¬´ë°©í–¥ ê°„ì„  ì¶”ê°€
 void drone_graph::add_undir(Edge& e) {
 	if (e.from_id >= 0 && e.from_id <= v && e.to_id >= 0 && e.to_id <= v) {
 		this->edges.push_back(e);
 		this->edges.push_back(Edge(e.to_id, e.from_id, e.to, e.from));
 	}
 	else
-		error(_error::shut_down, "Á¤Á¡ ¹üÀ§ ÃÊ°ú");
+		error(_error::shut_down, "ì •ì  ë²”ìœ„ ì´ˆê³¼");
 
 	return;
 }
 
-// ÃÖ¼Ò ½ÅÀå Æ®¸® Ãâ·Â
+// ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ì¶œë ¥
 void drone_graph::print_mst(vector<complain>& c_list) {
 	for (int i = 0; i <= mst.size(); i++) {
-		output << "# " << (i != 0 ? to_string(c_list[i - 1].get_id()) : "station") << " : "; // Á¤Á¡ ¹øÈ£
-		vector<Edge> edge = this->drone_graph::mst_edges_from(i); // Á¤Á¡¿¡ ¿¬°áµÈ °£¼± °¡Á®¿À±â
+		output << "# " << (i != 0 ? to_string(c_list[i - 1].get_id()) : "station") << " : "; // ì •ì  ë²ˆí˜¸
+		vector<Edge> edge = this->drone_graph::mst_edges_from(i); // ì •ì ì— ì—°ê²°ëœ ê°„ì„  ê°€ì ¸ì˜¤ê¸°
 		for (auto& e : edge)
-			output << "(" << (e.to_id != 0 ? to_string(c_list[e.to_id - 1].get_id()) : "station") << ", " << e.w << ")  "; // Á¤Á¡¿¡ ¿¬°áµÈ °£¼± Ãâ·Â
+			output << "(" << (e.to_id != 0 ? to_string(c_list[e.to_id - 1].get_id()) : "station") << ", " << e.w << ")  "; // ì •ì ì— ì—°ê²°ëœ ê°„ì„  ì¶œë ¥
 		output << "\n";
 	}
 	return;
 }
 
-// ÇÁ¸² ¾Ë°í¸®ÁòÀ¸·Î ÃÖ¼Ò ½ÅÀå Æ®¸® »ı¼º : https://yabmoons.tistory.com/363
+// í”„ë¦¼ ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ìƒì„± : https://yabmoons.tistory.com/363
 void drone_graph::prim_tree() {
 	priority_queue<Edge, vector<Edge>, cmp> que;
 	vector<Edge> edge_from_i = edges_from(0);
@@ -1114,22 +1112,22 @@ void drone_graph::prim_tree() {
 		}
 	}
 
-	// Å½»öÀ» ³¡³½ ÈÄ ¹æ¹® ¿©ºÎ Ç¥½Ã¸¦ ¸ğµÎ Áö¿ò
+	// íƒìƒ‰ì„ ëë‚¸ í›„ ë°©ë¬¸ ì—¬ë¶€ í‘œì‹œë¥¼ ëª¨ë‘ ì§€ì›€
 	visited.assign(v, false);
 
 	return;
 }
 
-// DFS·Î ÃÖ¼Ò ½ÅÀå Æ®¸® ÀüºÎ ¹æ¹®
+// DFSë¡œ ìµœì†Œ ì‹ ì¥ íŠ¸ë¦¬ ì „ë¶€ ë°©ë¬¸
 void drone_graph::fly_dfs_drone(vector<complain>& c_list) {
 	string route = "";
-	stack<pair<unsigned, unsigned>> s; // first´Â ¹æ¹®ÇØ¾ß ÇÒ ³ëµå, second´Â Á÷Àü¿¡ ¹æ¹®ÇÑ ³ëµå
+	stack<pair<unsigned, unsigned>> s; // firstëŠ” ë°©ë¬¸í•´ì•¼ í•  ë…¸ë“œ, secondëŠ” ì§ì „ì— ë°©ë¬¸í•œ ë…¸ë“œ
 
 	visited.assign(v, false);
 
 	s.emplace(0, 0);
 
-	output << "DFS °æ·Î Å½»öÀ» ½ÃÀÛÇÕ´Ï´Ù.\n";
+	output << "DFS ê²½ë¡œ íƒìƒ‰ì„ ì‹œì‘í•©ë‹ˆë‹¤.\n";
 
 	while (!s.empty()) {
 		pair<unsigned, unsigned> curr = s.top();
@@ -1149,10 +1147,10 @@ void drone_graph::fly_dfs_drone(vector<complain>& c_list) {
 		}
 	}
 
-	// Å½»öÀ» ³¡³½ ÈÄ ¹æ¹® ¿©ºÎ Ç¥½Ã¸¦ ¸ğµÎ Áö¿ò
+	// íƒìƒ‰ì„ ëë‚¸ í›„ ë°©ë¬¸ ì—¬ë¶€ í‘œì‹œë¥¼ ëª¨ë‘ ì§€ì›€
 	visited.assign(v, false);
 
-	// Å½»ö °á°ú Ãâ·Â
+	// íƒìƒ‰ ê²°ê³¼ ì¶œë ¥
 	output << "DFS route : " << route << "\n";
 	output << "----------\n";
 }
